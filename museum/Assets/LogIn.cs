@@ -11,7 +11,7 @@ public class LogIn : MonoBehaviour
     //認証が成功したら次のシーンに移る。
 
     //データベース用のパスワード
-    public Text passwordFromDB;
+    public string passwordFromDB;
     //Unity用のユーザ名とパスワード
     public string userFromU;
     public string passwordFromU;
@@ -23,11 +23,13 @@ public class LogIn : MonoBehaviour
         userFromU = userName.user;
         passwordFromU = password.password;
 
-        //データベースからuserFromUと一致するuserのパスワードを代入する。
-        passwordFromDB.text = "";
+        /*データベースからuserFromUと一致するuserを探しそのuserのパスワードをpasswordFromDBに代入する。*/
+       
 
         if(passwordFromU.CompareTo(passwordFromDB) == 0){
-            //シーン切り替え
+            //MyMuseumSceneに切り替え
+            //MyMuseumSceneは美術館生成しているSceneである。
+            SceneManager.LoadScene("MyMuseumScene");
         }
         else{
             UnityEngine.Debug.Log ("ユーザ名またはパスワードが間違っています。");
