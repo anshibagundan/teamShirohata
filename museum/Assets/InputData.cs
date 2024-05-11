@@ -18,7 +18,7 @@ public class NewBehaviourScript : MonoBehaviour
         UserName userName = GetComponent<UserName>();
         userName = userName.user;
 
-        /*データベースからuserが一致する画像のみを抽出し、photoList[]に入力する。*/
+        /*データベースからuserが一致する画像のみを抽出し、photoList[]に画像のidを入力する。*/
 
         int corriderCount = 0;
         int roomCount = 0;

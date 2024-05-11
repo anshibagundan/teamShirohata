@@ -368,3 +368,19 @@ Received Import Request.
 Start importing Assets/InputData.cs using Guid(93988441a44d045ecbfccf23d0a795e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8da588c48a4fca8a36c412f79b363774') in 0.001937 seconds
 Number of updated asset objects reloaded before import = 0
 Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time since last request: 467.758036 seconds.
+  path: Assets/LogIn.cs
+  artifactKey: Guid(350b9b33f81214fa7b968a962b4a2d25) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/LogIn.cs using Guid(350b9b33f81214fa7b968a962b4a2d25) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a25860e83d5b9c13208ed90388dd7798') in 0.006221 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time since last request: 53.359586 seconds.
+  path: Assets/InputData.cs
+  artifactKey: Guid(93988441a44d045ecbfccf23d0a795e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/InputData.cs using Guid(93988441a44d045ecbfccf23d0a795e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f071cb2e45f854275c44160fec9709c3') in 0.006684 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
