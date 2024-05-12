@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'vr_museum.herokuapp.com',
+    'vr-museum-6034ae04d19d.herokuapp.com',
 ]
 
 
