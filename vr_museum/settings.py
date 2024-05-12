@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
-import django_heroku
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,7 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'vr-museum-6034ae04d19d.herokuapp.com',
+    '.herokuapp.com',
 ]
 
 
@@ -46,6 +45,12 @@ INSTALLED_APPS = [
     'vr_museum_app',
     'rest_framework',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,7 +89,7 @@ WSGI_APPLICATION = 'vr_museum.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',#どのDBでもPostgreSQLなら同じ
+        'ENGINE': 'django.db.backends.postgresql',#どのDBでもPostgreSQLなら同じ
         'NAME': 'd9g53rlqni4ths',  # Heroku Postgresで確認したDatabaseの値を入力
         'USER': 'ucnuf1k9c07ss5',  # Heroku Postgresで確認したUserの値を入力
         'PASSWORD': 'p85bdbcf71c6021d17818332074785b622b604c48d0c3f3111a7cf456cd629466',  # Heroku Postgresで確認したPasswordの値を入力
@@ -130,16 +135,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-django_heroku.settings(locals())
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-    ]
-}
