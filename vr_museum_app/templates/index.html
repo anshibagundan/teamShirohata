@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <style>
@@ -135,7 +135,7 @@
     </style>
     {% block content %}
     <header id="header">
-        <img src="a" alt="a">
+        <p>a</p>
         <h2>web title</h2>
         <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
@@ -150,6 +150,15 @@
             {% endfor %}
         </ul>
         {% endif %}
+    </div>
+    <div>
+        {% for item in obj %}
+        <tr>
+            <td>{{ item.description }}</td>
+            <td><img src="{{ MEDIA_URL }}{{ item.content }}" alt="{{ MEDIA_URL }}{{ item.content }}" width="100" height="100"/></td>
+            <td>{{ item.uploaded_at }}</td>
+        <tr>
+        {% endfor %}
     </div>
     <div>
         <input type="file" id="file-input" accept="image/*">
@@ -167,7 +176,12 @@
     </div>
     <div id="overlay">
         <div id="overlayContent">
-            <form method="post" action="{% url 'title' %}">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Upload</button>
+            </form>
+            <!-- <form method="post" action="{% url 'title' %}">
                 {% csrf_token %}
                 <label for="title">写真タイトル:</label>
                 <input type="text" id="title" name="title">
@@ -185,7 +199,7 @@
                 <input type="text" id="tag" name="tag">
                 <br>
                 <button type="submit">決定</button>
-            </form>
+            </form> -->
         </div>
     </div>
     {% endblock %}
@@ -206,6 +220,7 @@
         const fileInput = document.getElementById('file-input');
         const imageElement = document.getElementById('image-element');
         const logElement = document.getElementById('log');
+        const contentInput = document.getElementById('content');
 
         fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -216,9 +231,9 @@
             const blob = new Blob([binaryData], { type: file.type });
             const imageUrl = URL.createObjectURL(blob);
             imageElement.src = imageUrl;
-            logElement.innerHTML = `ファイル名: ${file.name}, サイズ: ${file.size} bytes, タイプ: ${file.type}`;
+            logElement.innerHTML = `ファイル名: ${imageUrl}, サイズ: ${file.size} bytes, タイプ: ${file.type}`;
+            contentInput.value = imageUrl; // この行を追加
             };
-
             reader.readAsArrayBuffer(file);
         }
         });

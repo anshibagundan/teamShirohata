@@ -2,6 +2,8 @@ import io
 import logging
 from io import BytesIO
 
+import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -12,6 +14,7 @@ from django.views import generic
 from PIL import Image
 from rest_framework import viewsets
 
+from .forms import PhotoForm
 from .models import Photo
 from .serializers import PhotoSerializer
 
@@ -74,7 +77,11 @@ def title_page(request):
         detailed_title = request.POST.get('detailed_title')
         user = request.user
         time = request.POST.get('date')
-        content = request.POST.get('content')
+        content = request.FILES.get('content')
+        # url = request.POST.get('content')
+        # response = requests.get(url)
+        # content = Image.open(BytesIO(response.content))
+
 
         # content = request.FILES.get('content')
         # img = Image.open(content)
@@ -116,3 +123,26 @@ def title_page(request):
 def get_photo(request):
     photo = Photo.objects.all()
     return render(request, 'photo.html', {'photos': photo})
+
+@login_required
+def index(request):
+    obj = Photo.objects.all()  # GETリクエスト時には常にオブジェクトを取得する
+
+    if request.method == 'POST':
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save(commit=False)
+            photo.user = request.user  # ログインユーザーを取得してモデルに割り当てる
+            photo.height = 0
+            photo.width = 0
+            photo.save()
+            return redirect('title')
+    else:
+        form = PhotoForm()  # GETリクエスト時にフォームを作成する
+
+    return render(request, 'index.html', {
+        'form': form,
+        'obj': obj,
+        'MEDIA_URL': settings.MEDIA_URL
+    })
+

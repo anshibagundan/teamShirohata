@@ -6,7 +6,7 @@ class Photo(models.Model):
     detailed_title = models.CharField(max_length=100)
     user = models.CharField(max_length=20)
     time = models.DateField()
-    content = models.BinaryField()
+    content = models.ImageField(upload_to='documents/', default='defo')
     height = models.IntegerField()
     width = models.IntegerField()
     tag = models.CharField(max_length=20)
