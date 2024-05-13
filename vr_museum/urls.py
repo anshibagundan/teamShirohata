@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from vr_museum_app.views import (PhotoViewSet, get_photo, index, title_page,
+from vr_museum_app.views import (PhotoModelListView, PhotoViewSet, index,
                                  user_create, user_login)
 
 router = DefaultRouter()
@@ -16,7 +16,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', user_login, name='login'),
     path('login_create/', user_create, name='login_create'),
-    path('home/', index, name='title'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('photo/', get_photo, name='photo')
+    path('home/', index, name='title'),
+    path('api/photo_model/', PhotoModelListView.as_view(), name='photo_model_list'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
