@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+
+<body>
+    <img src="{% static 'png/suityann.png' %}" alt="">
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <header class="header">
+        <h1>ログイン新規アカウント作成画面だよ</h1>
+    </header>
+
+    <main>
+        <div></div>
+        <form method="post" action="{% url 'login_create' %}">
+            {% csrf_token %}
+            <label for="username">ユーザー名:</label>
+            <input type="text" id="username" name="new_username">
+            <br>
+            <label for="userpassword">パスワード教えろ:</label>
+            <input type="password" id="userpassword" name="new_password">
+            <br>
+            <button type="submit">作成</button>
+        </form>
+        <div></div>
+    </main>
+    <footer class="footer">
+        
+        <br>
+        Mail:
+    </footer>
+</body>
+
+</html>
