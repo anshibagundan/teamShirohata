@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Npgsql;//PistgreSQL用
+using System.Net.Http;
+using System.Threading.Tasks;
 
 public class LogIn : MonoBehaviour
 {
@@ -12,57 +13,69 @@ public class LogIn : MonoBehaviour
     //ボタンを押すとデータベースからUnityのユーザ名とデータベースのuserを一致するアカウントを見つける。
     //認証が成功したら次のシーンに移る。
 
-    //データベース用のパスワード
-    private string passwordFromDB;
+    //データベース用のパスワード    
+    private string hashedPasswordDB;
+
     //Unity用のユーザ名とパスワード
     public string userFromU;
-    private string passwordFromU;
+    private string hashedPasswordFromU;
     
-    public void OnClick(){
+    public async void OnClick(){
         //Unity用のユーザ名とパスワードをUserName.csとPassword.csから代入する。
         UserName userName = GetComponent<UserName>();
         Password password = GetComponent<Password>();
         userFromU = userName.user;
-        passwordFromU = password.password;
+        hashedPasswordFromU = password.hashedPassword;
 
-        /*データベースからuserFromUと一致するuserを探しそのuserのパスワードをpasswordFromDBに代入する。*/
-        string connectionString = 
-            "Server=ServerName;" +
-            "Database=DBName;" +
-            "User ID=Id;" +
-            "Password=Pass;";
-        using(var dbcon = new NpgsqlConnection(connectionString)){
-            dbcon.Open();
-            NpgsqlCommand dbcmd = dbcon.CreateCommand();
+        //データベースからuserFromUと一致するuserを探しそのuserのパスワードをpasswordFromDBに代入する。
+        string url = "https://vr-museum-6034ae04d19d.herokuapp.com/api/user_model/";
 
-            string sql = 
-            "SELECT password" +
-            "FROM user_list" +
-            "WHERE user =" + userFromU;
-
-            dbcmd.CommandText = sql;
-            NpgsqlDataReader reader = dbcmd.ExecuteReader();
-            while(reader.Read()){
-                passwordFromDB = (string)reader["password"];
-            }
-
-            //初期化
-            reader.Close();
-            reader = null;
-            dbcmd.Dispose();
-            dbcmd = null;
-            dbcon.Close();
+        List<MyData> myData = await FetchData(url);//DBから取得する
+        if(myData != null){
+           foreach(MyData data in myData){
+                if(userFromU == data.user){
+                    hashedPasswordDB = data.password;//パスワードはハッシュ化されている
+                    break;
+                }
+           }
+           if(hashedPasswordDB == null){//userが見つからなかった時
+                UnityEngine.Debug.Log ("ユーザが存在しません。");
+           }
         }
-       
 
-        if(passwordFromU.CompareTo(passwordFromDB) == 0){
+        //入力されたパスワードとデータベースからのパスワードを比較する。
+        if(hashedPasswordFromU == hashedPasswordDB){
             //MyMuseumSceneに切り替え
             //MyMuseumSceneは美術館生成しているSceneである。
             SceneManager.LoadScene("MyMuseumScene");
         }
         else{
-            UnityEngine.Debug.Log ("ユーザ名またはパスワードが間違っています。");
+            UnityEngine.Debug.Log ("パスワードが間違っています。");
         }
 
+    }
+
+    //DBからデータ取得する
+    async Task<List<MyData>> FetchData(string url){
+    
+        using (HttpClient client = new HttpClient()){//HTTPリクエストを送信し、受信する
+            HttpResponseMessage response = await client.GetAsync(url);//レスポンス結果
+
+            if(response.IsSuccessStatusCode){//レスポンスが正常に取得できた時、データを取得する
+                string responseData = await response.Content.ReadAsStringAsync();
+                string jsonData = responseData.TrimStart('[').TrimEnd(']');
+                return JsonUtility.FromJson<List<MyData>>(jsonData);
+            }
+            else{//エラー処理
+                Debug.LogError("Error: " + response.StatusCode);
+                return null;
+            }
+        }
+    }
+
+    public class MyData{
+        public string id;
+        public string user;
+        public string password;
     }
 }

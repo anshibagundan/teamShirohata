@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //画像データを保存する場所
+//photoNumを追加intで
 
 public class LinkedPhoto{
     int id_{get; set;}//いるかどうかは不明
@@ -18,7 +19,7 @@ public class LinkedPhoto{
     public LinkedPhoto NextPhoto {get; set;}
     string tag_{get; set;}
 
-    public LinkedPhoto(int id, string title, string user, DateTime time, Uri url, double height, double width, string tag){
+    public LinkedPhoto(int id, string title, string user, DateTime time, Uri url, double height, double width, string tag, int photoNum){
         id_ = id;
         title_ = title;
         user_ = user;
