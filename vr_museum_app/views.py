@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 
 from .forms import PhotoForm
 from .models import Photo
-from .serializers import PhotoSerializer
+from .serializers import PhotoSerializer, UserSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -73,27 +73,41 @@ def user_create(request):
     return render(request, 'login_create.html')
 
 
+from django.db import transaction
+
+
 @login_required
 def index(request):
-    obj = Photo.objects.all()  # GETリクエスト時には常にオブジェクトを取得する
-
+    obj = Photo.objects.all()
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
-            photo = form.save(commit=False)
-            photo.user = request.user  # ログインユーザーを取得してモデルに割り当てる
-            photo.height = 0
-            photo.width = 0
-            photo.save()
+            with transaction.atomic():  # トランザクションを開始
+                photo = form.save(commit=False)
+                photo.user = request.user
+
+                image_file = request.FILES['content']
+                image = Image.open(io.BytesIO(image_file.read()))
+                photo.width, photo.height = image.size
+
+                new_photo_num = int(request.POST.get('photo_num'))
+                max_photo_num = Photo.objects.count() + 1
+
+                if new_photo_num > max_photo_num:
+                    photo.photo_num = max_photo_num
+                else:
+                    # 既存のデータの番号をシフトする
+                    qs = Photo.objects.filter(photo_num__gte=new_photo_num).order_by('-photo_num')
+                    for p in qs:
+                        p.photo_num += 1
+                        p.save()
+                    photo.photo_num = new_photo_num
+
+                photo.save()
             return redirect('title')
     else:
-        form = PhotoForm()  # GETリクエスト時にフォームを作成する
-
-    return render(request, 'index.html', {
-        'form': form,
-        'obj': obj,
-        'MEDIA_URL': settings.MEDIA_URL
-    })
+        form = PhotoForm()
+    return render(request, 'index.html', {'form': form, 'obj': obj, 'MEDIA_URL': settings.MEDIA_URL})
 
 class PhotoModelListView(APIView):
     serializer_class = PhotoSerializer
@@ -101,6 +115,19 @@ class PhotoModelListView(APIView):
 
     def get_queryset(self):
         return Photo.objects.all()
+
+    def get(self, request):
+        queryset = self.get_queryset()  # get_queryset() メソッドを呼び出してクエリセットを取得
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+    
+
+class UserModelListView(APIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        return User.objects.all()
 
     def get(self, request):
         queryset = self.get_queryset()  # get_queryset() メソッドを呼び出してクエリセットを取得

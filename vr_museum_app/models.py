@@ -10,6 +10,7 @@ class Photo(models.Model):
     height = models.IntegerField()
     width = models.IntegerField()
     tag = models.CharField(max_length=20)
+    photo_num = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

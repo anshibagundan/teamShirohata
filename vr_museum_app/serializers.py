@@ -7,7 +7,7 @@ from .models import Photo
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ['id', 'title', 'detailed_title', 'user', 'time', 'content', 'height', 'width', 'tag']
+        fields = ['id', 'title', 'detailed_title', 'user', 'time', 'photo_num', 'content', 'height', 'width', 'tag']
         
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
