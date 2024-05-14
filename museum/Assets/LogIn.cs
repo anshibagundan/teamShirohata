@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Npgsql;//PistgreSQL用
 
 public class LogIn : MonoBehaviour
 {
@@ -12,10 +13,10 @@ public class LogIn : MonoBehaviour
     //認証が成功したら次のシーンに移る。
 
     //データベース用のパスワード
-    public string passwordFromDB;
+    private string passwordFromDB;
     //Unity用のユーザ名とパスワード
     public string userFromU;
-    public string passwordFromU;
+    private string passwordFromU;
     
     public void OnClick(){
         //Unity用のユーザ名とパスワードをUserName.csとPassword.csから代入する。
@@ -25,6 +26,33 @@ public class LogIn : MonoBehaviour
         passwordFromU = password.password;
 
         /*データベースからuserFromUと一致するuserを探しそのuserのパスワードをpasswordFromDBに代入する。*/
+        string connectionString = 
+            "Server=ServerName;" +
+            "Database=DBName;" +
+            "User ID=Id;" +
+            "Password=Pass;";
+        using(var dbcon = new NpgsqlConnection(connectionString)){
+            dbcon.Open();
+            NpgsqlCommand dbcmd = dbcon.CreateCommand();
+
+            string sql = 
+            "SELECT password" +
+            "FROM user_list" +
+            "WHERE user =" + userFromU;
+
+            dbcmd.CommandText = sql;
+            NpgsqlDataReader reader = dbcmd.ExecuteReader();
+            while(reader.Read()){
+                passwordFromDB = (string)reader["password"];
+            }
+
+            //初期化
+            reader.Close();
+            reader = null;
+            dbcmd.Dispose();
+            dbcmd = null;
+            dbcon.Close();
+        }
        
 
         if(passwordFromU.CompareTo(passwordFromDB) == 0){
