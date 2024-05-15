@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhotoProcessor : MonoBehaviour
+public class MuseumMaker : MonoBehaviour
 {
     public List<string> v = new List<string> { "S", "S", "S", "S", "S", "R", "R", "R", "R1", "R1", "S", "S", "R2" };
         
@@ -18,10 +18,37 @@ public class PhotoProcessor : MonoBehaviour
     private Vector3 exhibitOffset = new Vector3(0, 0, 10); // 各インスタンスの位置オフセット
     private Vector3 leftsidePosition = new Vector3(-10, 5, -12);
     private Vector3 leftsideRotation = new Vector3(0, 180, 0);
+    
+    public static int streetNum = 0;
+
+    private List<Vector3> roomPhotoPos = new List<Vector3>
+    {
+        new Vector3(-60, 10 , 0),//1
+        new Vector3(-40, 10 , -20),//2
+        new Vector3(-40, 10 , 20),//3
+        new Vector3(-60, 10 , 10),//4
+        new Vector3(-60, 10 , -10),//5
+        new Vector3(-30, 10 , -20),//6
+        new Vector3(-30, 10 , 20),//7
+        new Vector3(-50, 10 , -20),//8
+        new Vector3(-50, 10 , 20)//9
+    };
+    
+    private List<Vector3> roomPhotoRote = new List<Vector3>
+    {
+        new Vector3(0, 180 ,0),//1
+        new Vector3(0, 90 ,0),//2
+        new Vector3(0, -90 ,0),//3
+        new Vector3(0, 180 ,0),//4
+        new Vector3(0, 180 ,0),//5
+        new Vector3(0, 90 ,0),//6
+        new Vector3(0, -90 ,0),//7
+        new Vector3(0, 90 ,0),//8
+        new Vector3(0, -90 ,0)//9
+    };
 
     void Start()
     {
-        int streetNum = 0;
         int exhibitNum = 0;
         string roomName;
 
@@ -29,19 +56,22 @@ public class PhotoProcessor : MonoBehaviour
         {
             if (v[i] == "S")
             {
-                //通路
-                Vector3 position = startPosition + i * positionOffset;
+                // 通路
+                Vector3 position = startPosition + streetNum * positionOffset;
                 GameObject parentInstance = Instantiate(streetPrefab, position, Quaternion.identity);
-                //写真
-                Instantiate(exhibitPrefab, exhibitStart, Quaternion.identity, parentInstance.transform);
+                streetNum++;
+                // 写真
+                Instantiate(exhibitPrefab, position + exhibitStart, Quaternion.identity, parentInstance.transform);
+                i++;
+                exhibitNum++;
                 while (i < v.Count && v[i] == "S")
                 {
+                    // 写真
+                    Vector3 exhibitPosition = position + exhibitStart + exhibitNum * exhibitOffset;
+                    Instantiate(exhibitPrefab, exhibitPosition, Quaternion.identity, parentInstance.transform);
                     i++;
                     exhibitNum++;
-                    //写真
-                    Vector3 exhibitPosition = exhibitStart + exhibitNum * exhibitOffset;
-                    Instantiate(exhibitPrefab, exhibitPosition, Quaternion.identity, parentInstance.transform);
-                    
+
                     if (exhibitNum > 3)
                     {
                         exhibitNum = 0;
@@ -52,7 +82,28 @@ public class PhotoProcessor : MonoBehaviour
             }
             else
             {
+                roomName = v[i];
+                // 通路
+                Vector3 position = startPosition + streetNum * positionOffset;
+                GameObject parentInstance = Instantiate(roomPrefab, position, Quaternion.identity);
+                streetNum++;
+                // 写真
+                Quaternion rotation = Quaternion.Euler(roomPhotoRote[exhibitNum]);
+                Instantiate(exhibitPrefab, roomPhotoPos[exhibitNum] + position, rotation, parentInstance.transform);
+                exhibitNum++;
                 i++;
+                while (i < v.Count && v[i] == roomName)
+                {
+                    if (exhibitNum < roomPhotoPos.Count && exhibitNum < roomPhotoRote.Count)
+                    {
+                        // 写真
+                        rotation = Quaternion.Euler(roomPhotoRote[exhibitNum]);
+                        Instantiate(exhibitPrefab, roomPhotoPos[exhibitNum]+position, rotation, parentInstance.transform);
+                    }
+                    i++;
+                    exhibitNum++;
+                }
+                exhibitNum = 0;
             }
         }
     }
