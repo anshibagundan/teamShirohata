@@ -19,7 +19,7 @@ public class LinkedPhoto{
     public LinkedPhoto NextPhoto {get; set;}
     string tag_{get; set;}
 
-    public LinkedPhoto(int id, string title, string user, DateTime time, Uri url, double height, double width, string tag, int photoNum){
+    public LinkedPhoto(int id, string title, string user, DateTime time, Uri url, double height, double width, string tag){
         id_ = id;
         title_ = title;
         user_ = user;
@@ -67,9 +67,9 @@ public class LinkedList{
         if(first_ == photo){
             if (first_ != null)
             {
-                first_ = first_.NextNode;
+                first_ = first_.NextPhoto;
                 if (first_ != null)
-                    first_.PreviousNode = null;
+                    first_.PreviousPhoto = null;
             }
         }
         else{

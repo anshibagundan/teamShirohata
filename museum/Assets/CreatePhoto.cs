@@ -29,21 +29,21 @@ public class CreatePhoto : MonoBehaviour
 
         //for文にて画像に合わせて板とフレーム作成し、統合する。その後に廊下用と部屋用の画像と振り分ける。prehabで作成予定
         
-        for(int i; i < photoList.length; i++){
-            int x = width;
-            int y = height;
+        // for(int i; i < photoList.length; i++){
+        //     int x = width;
+        //     int y = height;
 
-            if(photoList[i].tag.CompareTo(/*廊下用画像のtagを入力する*/) == 0){//tagが廊下用画像のtagと一致する時
+        //     if(photoList[i].tag.CompareTo(/*廊下用画像のtagを入力する*/) == 0){//tagが廊下用画像のtagと一致する時
 
-                this.transform.localScale = new Vector3(x,y,0.1);//厚さは0.1で固定
-                // photoCorrider[corriderCount] = photoList[i];
-                // corriderCount++;
-            }
-            else{//tagが部屋用画像のtagと一致する時
-                // photoRoom[roomCount] = photoList[i];
-                // roomCount++;
-            }
-        }
+        //         this.transform.localScale = new Vector3(x,y,0.1);//厚さは0.1で固定
+        //         // photoCorrider[corriderCount] = photoList[i];
+        //         // corriderCount++;
+        //     }
+        //     else{//tagが部屋用画像のtagと一致する時
+        //         // photoRoom[roomCount] = photoList[i];
+        //         // roomCount++;
+        //     }
+        // }
     }
 
 

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Text;
 
 public class LogIn : MonoBehaviour
 {
@@ -17,20 +19,21 @@ public class LogIn : MonoBehaviour
     private string hashedPasswordDB;
 
     //Unity用のユーザ名とパスワード
+    public GameObject inputUserName;
+    public GameObject inputPassword;
     public string userFromU;
     private string hashedPasswordFromU;
     
     public async void OnClick(){
         //Unity用のユーザ名とパスワードをUserName.csとPassword.csから代入する。
-        UserName userName = GetComponent<UserName>();
-        Password password = GetComponent<Password>();
-        userFromU = userName.user;
-        hashedPasswordFromU = password.hashedPassword;
+        userFromU = inputUserName.GetComponent<Text>().text;
+        hashedPasswordFromU = Hash(inputPassword.GetComponent<Text>().text);
 
         //データベースからuserFromUと一致するuserを探しそのuserのパスワードをpasswordFromDBに代入する。
         string url = "https://vr-museum-6034ae04d19d.herokuapp.com/api/user_model/";
 
         List<MyData> myData = await FetchData(url);//DBから取得する
+        
         if(myData != null){
            foreach(MyData data in myData){
                 if(userFromU == data.user){
@@ -53,6 +56,18 @@ public class LogIn : MonoBehaviour
             UnityEngine.Debug.Log ("パスワードが間違っています。");
         }
 
+    }
+
+    //ハッシュ化
+    private string Hash(string password){
+        using(SHA256 sha256 = SHA256.Create()){
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < bytes.Length; i++){
+                builder.Append(bytes[i].ToString("x2"));//連結して16進数に変換
+            }
+            return builder.ToString();
+        }
     }
 
     //DBからデータ取得する
