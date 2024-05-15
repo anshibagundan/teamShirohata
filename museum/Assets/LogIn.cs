@@ -25,6 +25,7 @@ public class LogIn : MonoBehaviour
     private string hashedPasswordFromU;
     
     public async void OnClick(){
+
         //Unity用のユーザ名とパスワードをUserName.csとPassword.csから代入する。
         userFromU = inputUserName.GetComponent<Text>().text;
         hashedPasswordFromU = Hash(inputPassword.GetComponent<Text>().text);
