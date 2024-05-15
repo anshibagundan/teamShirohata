@@ -25,8 +25,7 @@ public class LogIn : MonoBehaviour
     private string hashedPasswordFromU;
     
     public async void OnClick(){
-
-        //Unity用のユーザ名とパスワードをUserName.csとPassword.csから代入する。
+        //Unity用のユーザ名をテキストフィールドから代入する。
         userFromU = inputUserName.GetComponent<Text>().text;
         hashedPasswordFromU = Hash(inputPassword.GetComponent<Text>().text);
 
@@ -47,6 +46,8 @@ public class LogIn : MonoBehaviour
            }
         }
 
+        
+        
         //入力されたパスワードとデータベースからのパスワードを比較する。
         if(hashedPasswordFromU == hashedPasswordDB){
             //MyMuseumSceneに切り替え
@@ -56,6 +57,8 @@ public class LogIn : MonoBehaviour
         else{
             UnityEngine.Debug.Log ("パスワードが間違っています。");
         }
+        
+        
 
     }
 
@@ -90,7 +93,7 @@ public class LogIn : MonoBehaviour
     }
 
     public class MyData{
-        public string id;
+        public int id;
         public string user;
         public string password;
     }
