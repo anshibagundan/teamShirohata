@@ -18,7 +18,13 @@ public class CreatePhoto : MonoBehaviour
     //Prefab用
     [SerializeField]
     GameObject board;
-    Vector3 position = Vector3.zero;
+   
+
+    Quaternion rot =Quaternion.Euler(0,0,180);//board回転する方法
+    //Prefabテスト
+    //Vector3 position = Vector3.zero;
+    [SerializeField]
+    float padding = 5;
 
     void Start(){
         extractionDB(); 
@@ -41,8 +47,10 @@ public class CreatePhoto : MonoBehaviour
         //boardに画像を貼り付け、双方向リストに挿入する。
         if(myData != null){
 
-            LogIn login = new LogIn();
+            //LogIn login = new LogIn();
             string userFromU = "RCC";//login.userFromU;
+
+            Vector3 position = Vector3.zero;//Prefabテスト
 
             foreach(MyData data in myData){
                 if(userFromU == data.user){
@@ -51,9 +59,11 @@ public class CreatePhoto : MonoBehaviour
                 float width = (float)data.width;
                 float height = (float)data.height;
 
-                //Prefabによるインスタンス生成
-                GameObject boardInstance = Instantiate(board, position, Quaternion.identity);
-                boardInstance.transform.localScale = new Vector3(width/(width+height), height/(width+height), (float)0.05);
+                //Prefabによるboardのインスタンス生成
+                GameObject boardInstance = Instantiate(board, position, rot);
+                boardInstance.transform.localScale = new Vector3((width/(width+height))*5, (height/(width+height))*5, (float)0.05);
+                
+                position.x += padding;
 
                 //画像をテクスチャとして生成する
                 string imageUrl = rootUrl + data.content;
@@ -85,7 +95,6 @@ public class CreatePhoto : MonoBehaviour
 
             if(response.IsSuccessStatusCode){//レスポンスが正常に取得できた時、データを取得する
                 string responseData = await response.Content.ReadAsStringAsync();
-                //string jsonData = responseData.TrimStart('[').TrimEnd(']');
                 return JsonConvert.DeserializeObject<List<MyData>>(responseData);
             }
             else{//エラー処理
