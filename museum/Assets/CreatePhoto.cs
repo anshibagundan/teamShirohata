@@ -47,8 +47,8 @@ public class CreatePhoto : MonoBehaviour
                 if(userFromU == data.user){
 
                 }
-                float width = float.Parse(data.width);
-                float height = float.Parse(data.height);
+                float width = (float)data.width;
+                float height = (float)data.height;
 
                 //Prefabによるインスタンス生成
                 GameObject boardInstance = Instantiate(board, position, Quaternion.identity);
@@ -70,7 +70,7 @@ public class CreatePhoto : MonoBehaviour
                     }
                 };
 
-                //photoList.Append(data.title, data.detailedTitle, data.time, boardInstance, height, width, data.tag, int.Parse(data.photoNum));
+                photoList.Append(data.title, data.detailed_title, data.time, boardInstance, height, width, data.tag, data.photo_num);
             }
             
             
@@ -84,6 +84,7 @@ public class CreatePhoto : MonoBehaviour
 
     //DBからデータ取得する
     async Task<List<MyData>> FetchData(string url){
+        
     
         using (HttpClient client = new HttpClient()){//HTTPリクエストを送信し、受信する
             HttpResponseMessage response = await client.GetAsync(url);//レスポンス結果
@@ -103,16 +104,16 @@ public class CreatePhoto : MonoBehaviour
 
     [Serializable]
     public class MyData{
-        public string id;
-        public string title;
-        public string detailedTitle;
-        public string user;
-        public string time;
-        public string photoNum;
-        public string content;
-        public string height;
-        public string width;
-        public string tag;
+    public int id;
+    public string title;
+    public string detailed_title;
+    public string user;
+    public string time;
+    public int photo_num;
+    public string content;
+    public int height;
+    public int width;
+    public string tag;
         
     }
 }

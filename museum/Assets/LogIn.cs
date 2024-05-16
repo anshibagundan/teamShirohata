@@ -76,6 +76,7 @@ public class LogIn : MonoBehaviour
 
     //DBからデータ取得する
     async Task<List<MyData>> FetchData(string url){
+        Debug.Log("ok1");
     
         using (HttpClient client = new HttpClient()){//HTTPリクエストを送信し、受信する
             HttpResponseMessage response = await client.GetAsync(url);//レスポンス結果

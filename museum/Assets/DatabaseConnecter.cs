@@ -1,68 +1,17 @@
-using UnityEngine;
-using UnityEngine.Networking;
-using System;
-using System.Collections;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-public class DatabaseConnector : MonoBehaviour
-{
-    [SerializeField] Renderer imageRenderer;
-
-    async void Start()
-    {
-        string url = "https://vr-museum-6034ae04d19d.herokuapp.com/api/photo_model/";
-        string rootUrl = "https://vr-museum-6034ae04d19d.herokuapp.com";
-
-        MyData myData = await FetchData(url);
-        if (myData != null)
-        {
-            string imageUrl = rootUrl + myData.content;
-            UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageUrl);
-            var asyncOperation = www.SendWebRequest();
-            asyncOperation.completed += (op) =>
-            {
-                OnDownloadCompleted(www);
-            };
-        }
-    }
-
-    async Task<MyData> FetchData(string url)
-    {
-        using (HttpClient client = new HttpClient())
-        {
-            HttpResponseMessage response = await client.GetAsync(url);
-            if (response.IsSuccessStatusCode)
-            {
-                string responseData = await response.Content.ReadAsStringAsync();
-                string jsonData = responseData.TrimStart('[').TrimEnd(']');
-                return JsonUtility.FromJson<MyData>(jsonData);
-            }
-            else
-            {
-                Debug.LogError("Error: " + response.StatusCode);
-                return null;
-            }
-        }
-    }
-
-    void OnDownloadCompleted(UnityWebRequest www)
-    {
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            
-imageRenderer.material.mainTexture = texture;
-        }
-        else
-        {
-            Debug.Log("画像の読み込みに失敗しました: " + www.error);
-        }
-    }
-
-    [Serializable]
-    public class MyData
-    {
-        public string content;
-    }
-}
+// [
+//     {"id":46,
+//     "title":"test5",
+//     "detailed_title":"test",
+//     "user":"RCC",
+//     "time":"2024-05-01",
+//     "photo_num":1,
+//     "content":"/media/documents/bin_UGNsE1b.jpg",
+//     "height":1200,
+//     "width":799,
+//     "tag":"test"
+//     },
+//     {"id":40,"title":"test１","detailed_title":"test","user":"RCC","time":"2024-05-02","photo_num":3,"content":"/media/documents/karinn.jpg","height":400,"width":400,"tag":"test"},{"id":47,"title":"test7","detailed_title":"test","user":"RCC","time":"2024-05-02","photo_num":2,"content":"/media/documents/poteti_gqFgt4i.jpg","height":582,"width":843,"tag":"test"}
+//     ]
+// UnityEngine.Debug:Log (object)
+// CreatePhoto/<FetchData>d__6:MoveNext () (at Assets/CreatePhoto.cs:93)
+// UnityEngine.UnitySynchronizationContext:ExecuteTasks () (at /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/UnitySynchronizationContext.cs:107)
