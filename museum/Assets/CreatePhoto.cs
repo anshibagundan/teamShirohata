@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 public class CreatePhoto : MonoBehaviour
 {
@@ -12,20 +13,17 @@ public class CreatePhoto : MonoBehaviour
     //このスクリプトはデータベースから画像を抽出し、画像を板に貼り付けフレームをつける。
     
     public LinkedList photoList = new LinkedList();//双方向リストの用意
-    public int[] sORr;//廊下用の画像か部屋用の画像かを判断する
+    public string[] sORr;//廊下用の画像か部屋用の画像かを判断する
 
     //Prefab用
     [SerializeField]
     GameObject board;
-    
-    //Prefabテスト用
-    //Vector3 position = Vector3.zero;
-    [SerializeField]
-    float padding = 2;
-
+    Vector3 position = Vector3.zero;
 
     void Start(){
-        extractionDB();   
+        extractionDB(); 
+        photoList.Sort();
+        sORr = photoList.SorR();
     }
 
     void Update(){
@@ -38,16 +36,13 @@ public class CreatePhoto : MonoBehaviour
 
         List<MyData> myData = await FetchData(url);//DBから取得する
 
-        sORr = new int[myData.Count];
-
-        Vector3 position = Vector3.zero;//Prefabテスト用
+        
 
         //boardに画像を貼り付け、双方向リストに挿入する。
         if(myData != null){
-            Debug.Log("ok");
 
             LogIn login = new LogIn();
-            string userFromU = login.userFromU;
+            string userFromU = "RCC";//login.userFromU;
 
             foreach(MyData data in myData){
                 if(userFromU == data.user){
@@ -59,7 +54,6 @@ public class CreatePhoto : MonoBehaviour
                 //Prefabによるインスタンス生成
                 GameObject boardInstance = Instantiate(board, position, Quaternion.identity);
                 boardInstance.transform.localScale = new Vector3(width/(width+height), height/(width+height), (float)0.05);
-                position.x += padding;//Prefabテスト用
 
                 //画像をテクスチャとして生成する
                 string imageUrl = rootUrl + data.content;
@@ -79,21 +73,20 @@ public class CreatePhoto : MonoBehaviour
                 photoList.Append(data.title, data.detailed_title, data.time, boardInstance, height, width, data.tag, data.photo_num);
             }
             
-            
         }
 
     }
 
     //DBからデータ取得する
     async Task<List<MyData>> FetchData(string url){
-        
+    
         using (HttpClient client = new HttpClient()){//HTTPリクエストを送信し、受信する
             HttpResponseMessage response = await client.GetAsync(url);//レスポンス結果
 
             if(response.IsSuccessStatusCode){//レスポンスが正常に取得できた時、データを取得する
                 string responseData = await response.Content.ReadAsStringAsync();
-                string jsonData = responseData.TrimStart('[').TrimEnd(']');
-                return JsonUtility.FromJson<List<MyData>>(jsonData);
+                //string jsonData = responseData.TrimStart('[').TrimEnd(']');
+                return JsonConvert.DeserializeObject<List<MyData>>(responseData);
             }
             else{//エラー処理
                 Debug.LogError("Error: " + response.StatusCode);

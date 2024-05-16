@@ -6,14 +6,14 @@ using UnityEngine;
 //画像データを保存する場所
 
 public class LinkedPhoto{
-    string title_{get; set;}
-    string detailedTitle_{get; set;}
-    string time_{get; set;}
-    GameObject picture_{get; set;}
-    float height_{get; set;}
-    float width_{get; set;}
-    string tag_{get; set;}
-    int photoNum_{get; set;}
+    public string title_{get; set;}
+    public string detailedTitle_{get; set;}
+    public string time_{get; set;}
+    public GameObject picture_{get; set;}
+    public float height_{get; set;}
+    public float width_{get; set;}
+    public string tag_{get; set;}
+    public int photoNum_{get; set;}
 
     public LinkedPhoto PreviousPhoto {get; set;}
     public LinkedPhoto NextPhoto {get; set;}
@@ -87,25 +87,70 @@ public class LinkedList{
         }
     }
 
-    //特定の場所に追加する
-    public void InsertAfter(LinkedPhoto photo, string title, string detailedTitle, string time, GameObject picture, float height, float width, string tag, int photoNum){
-        if(photo == null){
-            Append(title, detailedTitle, time, picture, height, width, tag, photoNum);
+    public int Size(){
+        int count = 1;
+
+        LinkedPhoto current = first_;
+        while(current != null){
+            count++;
+            current = current.NextPhoto;
+        }
+        return count;
+    }
+
+    //画像を入れ替える
+    public void Change(LinkedPhoto photo1, LinkedPhoto photo2){
+        LinkedPhoto temp = photo1.NextPhoto;
+        photo1.NextPhoto = photo2.NextPhoto;
+        photo2.NextPhoto = temp;
+
+        temp = photo1.PreviousPhoto;
+        photo1.PreviousPhoto = photo2.PreviousPhoto;
+        photo2.PreviousPhoto = photo1.PreviousPhoto;
+    }
+
+    public void Sort(){
+        if(first_ == null){
             return;
         }
 
         LinkedPhoto current = first_;
+        while(current.NextPhoto != null){
+            LinkedPhoto comparison = current.NextPhoto;
+            LinkedPhoto min = current;
+
+            while(comparison != null){
+                if(min.photoNum_ > comparison.photoNum_){
+                    min = comparison;
+                }
+                comparison = comparison.NextPhoto;
+            }
+            Change(current, min);
+            
+            current = current.NextPhoto;
+        }
+    }
+
+    public string[] SorR(){
+        LinkedPhoto current = first_;
+        string[] sORr = new string[this.Size()];
+        int num = 0;
+        int roomCount = 0;
+
         while(current != null){
-            if(current == photo){
-                LinkedPhoto newPhoto = new LinkedPhoto(title, detailedTitle, time, picture, height, width, tag, photoNum);
-                newPhoto.NextPhoto = current.NextPhoto;
-                newPhoto.PreviousPhoto = current;
-                current.NextPhoto = newPhoto;
-                break;
+            if(current.tag_ == "corridor"){
+                sORr[num] = "S";
             }
             else{
-                current = current.NextPhoto;
+                if(sORr[num-1] == "S" || num == 0){
+                    roomCount++;  
+                }
+                sORr[num] = "R" + roomCount;
+
             }
+            num++;
+            current = current.NextPhoto;
         }
+        return sORr;
     }
 }
