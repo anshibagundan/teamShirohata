@@ -24,9 +24,14 @@ public class CreatePhoto : MonoBehaviour
     float padding = 2;
 
 
-    public async void Start(){
+    void Start(){
+        extractionDB();   
+    }
 
+    void Update(){
+    }
 
+    async Task extractionDB(){
         //DBからデータを取得する
         string url = "https://vr-museum-6034ae04d19d.herokuapp.com/api/photo_model/";
         string rootUrl = "https://vr-museum-6034ae04d19d.herokuapp.com";//画像貼り付け用のurl
@@ -39,6 +44,7 @@ public class CreatePhoto : MonoBehaviour
 
         //boardに画像を貼り付け、双方向リストに挿入する。
         if(myData != null){
+            Debug.Log("ok");
 
             LogIn login = new LogIn();
             string userFromU = login.userFromU;
@@ -78,20 +84,14 @@ public class CreatePhoto : MonoBehaviour
 
     }
 
-    void Update(){
-
-    }
-
     //DBからデータ取得する
     async Task<List<MyData>> FetchData(string url){
         
-    
         using (HttpClient client = new HttpClient()){//HTTPリクエストを送信し、受信する
             HttpResponseMessage response = await client.GetAsync(url);//レスポンス結果
 
             if(response.IsSuccessStatusCode){//レスポンスが正常に取得できた時、データを取得する
                 string responseData = await response.Content.ReadAsStringAsync();
-                Debug.Log(responseData);
                 string jsonData = responseData.TrimStart('[').TrimEnd(']');
                 return JsonUtility.FromJson<List<MyData>>(jsonData);
             }

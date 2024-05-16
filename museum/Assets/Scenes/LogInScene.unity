@@ -2063,8 +2063,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 350b9b33f81214fa7b968a962b4a2d25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputUserName: {fileID: 1461212916}
-  inputPassword: {fileID: 1108918919}
+  button: {fileID: 2011126765}
+  inputUserName: {fileID: 1774717777}
+  inputPassword: {fileID: 1774717777}
   userFromU: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
