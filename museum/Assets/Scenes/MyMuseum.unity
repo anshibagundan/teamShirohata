@@ -2832,7 +2832,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &573514317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2840,7 +2840,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 573514316}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93988441a44d045ecbfccf23d0a795e8, type: 3}
   m_Name: 
@@ -10132,6 +10132,7 @@ GameObject:
   - component: {fileID: 2014054450}
   - component: {fileID: 2014054452}
   - component: {fileID: 2014054453}
+  - component: {fileID: 2014054454}
   m_Layer: 0
   m_Name: MakeStreet
   m_TagString: Untagged
@@ -10194,9 +10195,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2014054449}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30dfec30aa75f42059e5556ffef1513a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  streetPrefab: {fileID: 6498600967376705261, guid: ee32781bfbd164aac800b05d1901e81d, type: 3}
+  roomPrefab: {fileID: 5130473605737306294, guid: 616f5f9494c1446fc9615e89228d7248, type: 3}
+  exhibitPrefab: {fileID: 6702624250441575413, guid: bfe2b1ffd3c7f474c986d494e84b6676, type: 3}
+--- !u!114 &2014054454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014054449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68fe9f7864d9b48a18672be4c2c4654f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   streetPrefab: {fileID: 6498600967376705261, guid: ee32781bfbd164aac800b05d1901e81d, type: 3}

@@ -12,21 +12,22 @@ public class CreatePhoto : MonoBehaviour
     // Start is called before the first frame update
     //このスクリプトはデータベースから画像を抽出し、画像を板に貼り付けフレームをつける。
     
+    //public static CreatePhoto createPhoto;//他のスクリプトにインスタンスを引き渡す用
+
     public LinkedList photoList = new LinkedList();//双方向リストの用意
     public string[] sORr;//廊下用の画像か部屋用の画像かを判断する
 
     //Prefab用
     public GameObject board;
     
-    Quaternion rot =Quaternion.Euler(0,0,180);//board回転する方法
+    Quaternion rot =Quaternion.Euler(0,90,180);//board回転する方法
     //Prefabテスト
     //Vector3 position = Vector3.zero;
     float padding = 5;
 
-    void Start(){
-        extractionDB(); 
+    async void Start(){
+        await extractionDB(); 
         photoList.Sort();
-        sORr = photoList.SorR();
     }
 
     void Update(){
@@ -77,7 +78,10 @@ public class CreatePhoto : MonoBehaviour
                     }
                 };
 
+                boardInstance.SetActive(false);//オブジェクトの非表示
+
                 photoList.Append(data.title, data.detailed_title, data.time, boardInstance, height, width, data.tag, data.photo_num);
+                Debug.Log(photoList.Size());
             }
             
         }
