@@ -193,7 +193,6 @@ public class MakeMyMuseum : MonoBehaviour
                         break;
                     }else if(current.NextPhoto != null){
                         current = current.NextPhoto;
-                        //Debug.Log(current.photoNum_);
                     }
                 }
                 exhibitNum = 0;
@@ -213,17 +212,19 @@ public class MakeMyMuseum : MonoBehaviour
 
                 exhibitNum++;
                 i++;
+                current = current.NextPhoto;
 
                 while (i < v.Count && v[i] == roomName)
                 {
-                    current = current.NextPhoto;
-
+                    
                     if (exhibitNum < roomPhotoPos.Count && exhibitNum < roomPhotoRote.Count)
                     {
                         // 写真
                         rotation = Quaternion.Euler(roomPhotoRote[exhibitNum]);
                         current.SetUp(roomPhotoPos[exhibitNum] + position, rotation);
                         //Instantiate(exhibitPrefab, roomPhotoPos[exhibitNum]+position, rotation, parentInstance.transform);
+                    }else if(current.NextPhoto != null){
+                        current = current.NextPhoto;
                     }
 
                     i++;
