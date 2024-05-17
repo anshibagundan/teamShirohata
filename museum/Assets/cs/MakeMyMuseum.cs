@@ -90,7 +90,7 @@ public class MakeMyMuseum : MonoBehaviour
 
                 //PrefabによるexhibitPrefabのインスタンス生成
                 GameObject exhibitPrefabInstance = Instantiate(exhibitPrefab, position, Quaternion.identity);
-                exhibitPrefabInstance.transform.localScale = new Vector3((width/(width+height))*5, (height/(width+height))*5, (float)0.05);
+                exhibitPrefabInstance.transform.localScale = new Vector3((width/(width+height))*10, (height/(width+height))*10, (float)0.05);
                 
                 position.x += padding;
 
