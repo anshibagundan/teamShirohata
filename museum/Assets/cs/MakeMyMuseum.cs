@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 public class MakeMyMuseum : MonoBehaviour
 {
-    private List<string> v = new List<string> { "R", "R", "R", "R", "S", "R", "R", "R", "R", "R", "R","R", "R", "R", "R1", "R1", "S", "S", "R2" };
+    private List<string> v = new List<string>{};
     //↑最終的にはtagで判別するかも…
         
     public GameObject streetPrefab; 
@@ -58,9 +58,9 @@ public class MakeMyMuseum : MonoBehaviour
 
     async void Start()
     {
-       await extractionDB();
-       
-       MuseumMaker();
+       await extractionDB();//データを抽出して画像をLinkedListに挿入
+       photoList.SorR(v);//廊下か部屋かの判別用リストに情報を入れる
+       MuseumMaker();//内装づくり&配置
        
         
     }
@@ -113,19 +113,7 @@ public class MakeMyMuseum : MonoBehaviour
                 exhibitPrefabInstance.SetActive(false);//オブジェクトの非表示
 
                 photoList.Append(data.title, data.detailed_title, data.time, exhibitPrefabInstance, height, width, data.tag, data.photo_num);
-            }
-
-            for(int n=0; n<15; n++){
-                //PrefabによるexhibitPrefabのインスタンス生成
-                GameObject exhibitPrefabInstance = Instantiate(exhibitPrefab, position, Quaternion.identity);
-                
-                position.x += padding;
-                exhibitPrefabInstance.SetActive(false);//オブジェクトの非表示
-
-                photoList.Append("test", "a", "time", exhibitPrefabInstance, 1, 1, "tag", n+5);
-            }
-
-            
+            }  
             
         }
 
@@ -175,7 +163,7 @@ public class MakeMyMuseum : MonoBehaviour
         for (int i = 0; i < v.Count;)
         {
             
-            if (v[i] == "S")
+            if (v[i] == "s")
             {
                 // 通路
                 Vector3 position = startPosition + streetNum * positionOffset;
@@ -189,7 +177,7 @@ public class MakeMyMuseum : MonoBehaviour
                 exhibitNum++;
                 //current = current.NextPhoto;
                 
-                while (i < v.Count && v[i] == "S")
+                while (i < v.Count && v[i] == "s")
                 {
                     current = current.NextPhoto;
 
