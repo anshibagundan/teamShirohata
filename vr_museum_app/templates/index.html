@@ -5,87 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>mymuse photo</title>
 </head>
 <body>
     <style>
         body{
-            height: calc(100vh - 16px);
             display: grid;
-            grid-template-columns: repeat(11 ,1fr);
-            grid-template-rows: repeat(7 ,1fr);
-        }
-        header{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #afafaf;
-            padding: 1%;
-        }
-        #day_button{
-            grid-column: 1/3;
-            grid-row: 0/1;
-            align-self: center;
-            justify-self: center;
-        }
-        #todays{
-            display: flex;
-            grid-column: 4/9;
-            grid-row: 2/3;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #onedays_data{
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(10, 1fr);
-            grid-column: 2/11;
-            grid-row: 3/7;
-            background-color: azure;
-        }
-        #times{
-            height: 100%;
-            width: 100%;
-            grid-column: 1/6;
-            grid-row: 1/11;
-            align-self: center;
-            justify-self: center;
-        }
-        #note{
-            background-color: #FFFFFF;
-            border: solid 2px;
-            border-color: blanchedalmond;
-            grid-column: 6/11;
-            grid-row: 5/11;
-            margin: 3%;
+            background-image: url("http://127.0.0.1:8000/media/background_img.jpg");
+            background-size: 100vw 100vh;  /* 背景画像の横幅をコンテナに合わせ、縦幅を自動調整 */
+            background-repeat: no-repeat;  /* 背景画像の繰り返しを無効化 */
+            background-attachment: fixed;  /* 背景画像を固定する */
+            grid-template-columns: repeat(21 ,1fr);
+            grid-template-rows: repeat(15 ,1fr);
+            margin: 0px;
         }
         #under_button{
-            grid-column: 4/9;
+            grid-column: 1/6;
             grid-row: 7/8;
             align-self: center;
             justify-self: center;
         }
-
-        .day-button {
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            text-decoration: none;
-            color: #706a6a;
-            font-size: 18px;
-            border-radius: 5px;
-            border-color: #e3e06b;
-            font-weight: bold;
-            transition: 0.3s;
-            box-shadow: 0px 0px 3px 2px rgba(203, 235, 166, 0.5);
-            background-color: #e3e06b;
+        #tag_under_button{
+            grid-column: 7/12;
+            grid-row: 7/8;
+            align-self: center;
+            justify-self: center;
         }
-
-        .day-button:hover {
-            opacity: .7;
-        }
-        /* 予定編集 */
         #edit_button{
             background-color: #95efb3;
             font-family: 'Inter';
@@ -94,7 +39,7 @@
             font-size: 32px;
             line-height: 39px;
             color: #FFFFFF;
-            -webkit-text-stroke: 1px black; /* テキストに輪郭を追加 */
+            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
             border-color: white;
         }
         #delete_button{
@@ -105,7 +50,7 @@
             font-size: 32px;
             line-height: 39px;
             color: #FFFFFF;
-            -webkit-text-stroke: 1px black; /* テキストに輪郭を追加 */
+            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
             border-color: white;
         }
         #add_button{
@@ -116,12 +61,41 @@
             font-size: 32px;
             line-height: 39px;
             color: #FFFFFF;
-            -webkit-text-stroke: 1px black; /* テキストに輪郭を追加 */
+            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
             border-color: white;
         }
-        #header{
-            grid-row: 1/2;
-            grid-column: 1/12;
+        #tag_edit_button{
+            background-color: #95efb3;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 39px;
+            color: #FFFFFF;
+            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
+            border-color: white;
+        }
+        #tag_delete_button{
+            background-color: #EF9595;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 39px;
+            color: #FFFFFF;
+            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
+            border-color: white;
+        }
+        #tag_add_button{
+            background-color: #A2CAF9;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 39px;
+            color: #FFFFFF;
+            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
+            border-color: white;
         }
         #overlay {
             display: none;
@@ -144,13 +118,15 @@
         }
 
         #photo_data{
-            grid-column: 1/12;
-            grid-row: 2/5;
+            grid-column: 3/20;
+            grid-row: 4/7;
             display: grid;
-            grid-template-columns: repeat(11, 1fr);
+            background-color: #FFFFFF;
+            grid-template-columns: repeat(5, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 20px;
+            padding: 10px;
         }
         #photo_data_chaild{
             display: flex;
@@ -159,15 +135,18 @@
         }
 
     </style>
+
     {% block content %}
     <header id="header">
-        <p>a</p>
-        <h2>web title</h2>
-        <form action="{% url 'logout' %}" method="post">
+        <p style="grid-column: 1/3;"></p>
+        <p style="color: azure; font-weight: bold; font-size: 720%; margin: 0px; letter-spacing: 10px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; grid-column: 3/10; align-self: center; justify-self: center;">mymuse</p>
+        <form action="{% url 'logout' %}" method="post" style="grid-column: 10/12; justify-self: center;">
             {% csrf_token %}
             <button type="submit">ログアウト</button>
         </form>
     </header>
+    <div style="grid-area: 2/2/16/21; background-color: #e4e3e3be; margin-bottom: 70px;
+    margin-top: 70px;"></div>
     <div>
         {% if messages %}
         <ul>
@@ -181,13 +160,14 @@
         {% for item in obj %}
         <tr>
             <td>{{ item.description }}</td>
-            <div style="background-color: #A2CAF9; border: solid 2px;">
+            <div style="background-color: #A2CAF9; border: solid 1px coral;">
                 <div id="photo_data_chaild">{{ item.title }}</div>
                 <div id="photo_data_chaild">{{ item.detailed_title }}</div>
                 <div id="photo_data_chaild">{{ item.time }}</div>
                 <div id="photo_data_chaild">{{ item.tag }}</div>
                 <div id="photo_data_chaild">{{ item.photo_num}}</div>
                 <div id="photo_data_chaild"><img src="{{ MEDIA_URL }}{{ item.content }}" alt="{{ MEDIA_URL }}{{ item.content }}" width="100" height="100"/></div>
+                <br>
             </div>
             <td>{{ item.uploaded_at }}</td>
         <tr>
@@ -204,6 +184,19 @@
             写真削除
         </button>
     </div>
+
+    <div id="tag_under_button">
+        <button id="tag_add_button">
+            tag追加
+        </button>
+        <button id="tag_edit_button">
+            tag編集
+        </button>
+        <button id="tag_delete_button">
+            tag削除
+        </button>
+    </div>
+
     <div id="overlay">
         <div id="overlayContent">
             <form method="post" enctype="multipart/form-data">

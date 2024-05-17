@@ -16,7 +16,7 @@ from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .forms import PhotoForm
+from .forms import PhotoForm, TagForm
 from .models import Photo
 from .serializers import PhotoSerializer, UserSerializer
 
@@ -81,6 +81,7 @@ def index(request):
     obj = Photo.objects.all()
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES)
+        Tag_form = TagForm(request.POST)
         if form.is_valid():
             with transaction.atomic():  # トランザクションを開始
                 photo = form.save(commit=False)
@@ -105,16 +106,26 @@ def index(request):
 
                 photo.save()
             return redirect('title')
+        
+        elif Tag_form.is_valid():
+            tag_form = TagForm(request.POST)
+            if tag_form.is_valid():
+                tag = tag_form.save(commit=False)
+                tag.save()
+            return redirect('title')
     else:
         form = PhotoForm()
+        obj = Photo.objects.all().order_by('photo_num')
     return render(request, 'index.html', {'form': form, 'obj': obj, 'MEDIA_URL': settings.MEDIA_URL})
+
+
 
 class PhotoModelListView(APIView):
     serializer_class = PhotoSerializer
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        return Photo.objects.all()
+        return Photo.objects.all().order_by('photo_num')
 
     def get(self, request):
         queryset = self.get_queryset()  # get_queryset() メソッドを呼び出してクエリセットを取得

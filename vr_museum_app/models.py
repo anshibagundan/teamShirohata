@@ -14,3 +14,10 @@ class Photo(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Tag(models.Model):
+    tag = models.CharField(max_length=20)
+    user = models.CharField(max_length=20)
+    
+    def __str__(self):
+        return self.tag
