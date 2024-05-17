@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 public class MakeMyMuseum : MonoBehaviour
 {
-    private List<string> v = new List<string> { "S", "S", "S"};//, "S", "S", "R", "R", "R", "R", "R", "R","R", "R", "R", "R1", "R1", "S", "S", "R2" };
+    private List<string> v = new List<string> { "R", "R", "R", "R", "S", "R", "R", "R", "R", "R", "R","R", "R", "R", "R1", "R1", "S", "S", "R2" };
     //↑最終的にはtagで判別するかも…
         
     public GameObject streetPrefab; 
@@ -32,24 +32,24 @@ public class MakeMyMuseum : MonoBehaviour
 
     private List<Vector3> roomPhotoPos = new List<Vector3>
     {
-        new Vector3(-58, 10 , 0),//1
-        new Vector3(-40, 10 , -18),//2
-        new Vector3(-40, 10 , 18),//3
-        new Vector3(-58, 10 , 10),//4
-        new Vector3(-58, 10 , -10),//5
-        new Vector3(-30, 10 , -18),//6
-        new Vector3(-30, 10 , 18),//7
-        new Vector3(-50, 10 , -18),//8
-        new Vector3(-50, 10 , 18)//9
+        new Vector3(-60, 10 , 0),//1
+        new Vector3(-40, 10 , -20),//2
+        new Vector3(-40, 10 , 20),//3
+        new Vector3(-60, 10 , 10),//4
+        new Vector3(-60, 10 , -10),//5
+        new Vector3(-30, 10 , -20),//6
+        new Vector3(-30, 10 , 20),//7
+        new Vector3(-50, 10 , -20),//8
+        new Vector3(-50, 10 , 20)//9
     };
     
     private List<Vector3> roomPhotoRote = new List<Vector3>
     {
-        new Vector3(0, 180 ,0),//1
-        new Vector3(0, 90 ,0),//2
-        new Vector3(0, -90 ,0),//3
-        new Vector3(0, 180 ,0),//4
-        new Vector3(0, 180 ,0),//5
+        new Vector3(0, -90 ,180),//1
+        new Vector3(0, 180 ,0),//2
+        new Vector3(0, 0 ,0),//3
+        new Vector3(0, -90 ,180),//4
+        new Vector3(0, -90 ,180),//5
         new Vector3(0, 90 ,0),//6
         new Vector3(0, -90 ,0),//7
         new Vector3(0, 90 ,0),//8
@@ -187,12 +187,14 @@ public class MakeMyMuseum : MonoBehaviour
                     i++;
                     exhibitNum++;
 
+                    if(current.NextPhoto != null){
+                        current = current.NextPhoto;
+                    }
+
                     if (exhibitNum > 3)
                     {
                         exhibitNum = 0;
                         break;
-                    }else if(current.NextPhoto != null){
-                        current = current.NextPhoto;
                     }
                 }
                 exhibitNum = 0;
