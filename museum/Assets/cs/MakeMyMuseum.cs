@@ -46,21 +46,22 @@ public class MakeMyMuseum : MonoBehaviour
     private List<Vector3> roomPhotoRote = new List<Vector3>
     {
         new Vector3(0, -90 ,180),//1
-        new Vector3(0, 180 ,0),//2
-        new Vector3(0, 0 ,0),//3
+        new Vector3(0, 180 ,180),//2
+        new Vector3(0, 0 ,180),//3
         new Vector3(0, -90 ,180),//4
         new Vector3(0, -90 ,180),//5
-        new Vector3(0, 90 ,0),//6
-        new Vector3(0, -90 ,0),//7
-        new Vector3(0, 90 ,0),//8
-        new Vector3(0, -90 ,0)//9
+        new Vector3(0, 180 ,180),//6
+        new Vector3(0, 0 ,180),//7
+        new Vector3(0, 180 ,180),//8
+        new Vector3(0, 0 ,180)//9
     };
 
     async void Start()
     {
        await extractionDB();
-       //photoList.Sort();
+       
        MuseumMaker();
+       
         
     }
 
@@ -113,6 +114,18 @@ public class MakeMyMuseum : MonoBehaviour
 
                 photoList.Append(data.title, data.detailed_title, data.time, exhibitPrefabInstance, height, width, data.tag, data.photo_num);
             }
+
+            for(int n=0; n<15; n++){
+                //PrefabによるexhibitPrefabのインスタンス生成
+                GameObject exhibitPrefabInstance = Instantiate(exhibitPrefab, position, Quaternion.identity);
+                
+                position.x += padding;
+                exhibitPrefabInstance.SetActive(false);//オブジェクトの非表示
+
+                photoList.Append("test", "a", "time", exhibitPrefabInstance, 1, 1, "tag", n+5);
+            }
+
+            
             
         }
 
@@ -155,11 +168,13 @@ public class MakeMyMuseum : MonoBehaviour
         int exhibitNum = 0;
         string roomName;
         LinkedPhoto current = photoList.First();
-        
+        //Debug.Log(photoList.Last().photoNum_);
+
+
+
         for (int i = 0; i < v.Count;)
         {
             
-
             if (v[i] == "S")
             {
                 // 通路
@@ -167,29 +182,23 @@ public class MakeMyMuseum : MonoBehaviour
                 GameObject parentInstance = Instantiate(streetPrefab, position, Quaternion.identity);
                 streetNum++;
                 // 写真
-                // Instantiate(exhibitPrefab, position + exhibitStart, Quaternion.identity, parentInstance.transform);
-                current.SetUp(position + exhibitStart,rot );
-                //current.gameObject.transform.parent = parentInstance.transform;
+                current.SetUp(position + exhibitStart,rot);
+                Debug.Log(current.photoNum_);
                 
                 i++;
                 exhibitNum++;
-                current = current.NextPhoto;
+                //current = current.NextPhoto;
                 
                 while (i < v.Count && v[i] == "S")
                 {
+                    current = current.NextPhoto;
 
                     // 写真
                     Vector3 exhibitPosition = position + exhibitStart + exhibitNum * exhibitOffset;
                     current.SetUp(exhibitPosition, rot);
-                    //Debug.Log(current.photoNum_);
-                    //current.gameObject.transform.parent = parentInstance.transform;
-                    //Instantiate(exhibitPrefab, exhibitPosition, Quaternion.identity, parentInstance.transform);
+            
                     i++;
                     exhibitNum++;
-
-                    if(current.NextPhoto != null){
-                        current = current.NextPhoto;
-                    }
 
                     if (exhibitNum > 3)
                     {
@@ -198,6 +207,7 @@ public class MakeMyMuseum : MonoBehaviour
                     }
                 }
                 exhibitNum = 0;
+                current = current.NextPhoto;
             }
             else
             {
@@ -210,30 +220,36 @@ public class MakeMyMuseum : MonoBehaviour
                 // 写真
                 Quaternion rotation = Quaternion.Euler(roomPhotoRote[exhibitNum]);
                 current.SetUp(roomPhotoPos[exhibitNum] + position, rotation);
-                //Instantiate(exhibitPrefab, roomPhotoPos[exhibitNum] + position, rotation, parentInstance.transform);
+                
 
                 exhibitNum++;
                 i++;
-                current = current.NextPhoto;
+                
+                
 
                 while (i < v.Count && v[i] == roomName)
                 {
+                    current = current.NextPhoto;
+                    Debug.Log(current.photoNum_);
                     
                     if (exhibitNum < roomPhotoPos.Count && exhibitNum < roomPhotoRote.Count)
                     {
                         // 写真
                         rotation = Quaternion.Euler(roomPhotoRote[exhibitNum]);
                         current.SetUp(roomPhotoPos[exhibitNum] + position, rotation);
-                        //Instantiate(exhibitPrefab, roomPhotoPos[exhibitNum]+position, rotation, parentInstance.transform);
-                    }else if(current.NextPhoto != null){
-                        current = current.NextPhoto;
+
                     }
 
                     i++;
                     exhibitNum++;
                     
                 }
+                
+
+
                 exhibitNum = 0;
+                
+                current = current.NextPhoto;
             }
             
             

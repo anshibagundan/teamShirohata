@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MuseumMaker : MonoBehaviour
 {
-    private List<string> v = new List<string> { "S", "S", "S", "S", "S", "R", "R", "R", "R", "R", "R",　"R", "R", "R", "R1", "R1", "S", "S", "R2" };
+    private List<string> v = new List<string> { "S", "S", "S", "S", "S", "R", "R", "R", "R", "R", "R","R", "R", "R", "R1", "R1", "S", "S", "R2" };
         
     public GameObject streetPrefab; 
     public GameObject roomPrefab; 
