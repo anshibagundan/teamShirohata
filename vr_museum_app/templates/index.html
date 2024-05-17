@@ -9,94 +9,140 @@
 </head>
 <body>
     <style>
+        /* 501138 1 */
         body{
             display: grid;
-            background-image: url("http://127.0.0.1:8000/media/background_img.jpg");
+            background: linear-gradient(0deg, rgba(255, 224, 178, 0.2), rgba(255, 224, 178, 0.2)), url("http://127.0.0.1:8000/media/background_img.jpg");
             background-size: 100vw 100vh;  /* 背景画像の横幅をコンテナに合わせ、縦幅を自動調整 */
             background-repeat: no-repeat;  /* 背景画像の繰り返しを無効化 */
             background-attachment: fixed;  /* 背景画像を固定する */
             grid-template-columns: repeat(21 ,1fr);
-            grid-template-rows: repeat(15 ,1fr);
+            grid-template-rows: repeat(21 ,calc(100vh / 5));
             margin: 0px;
         }
-        #under_button{
-            grid-column: 1/6;
-            grid-row: 7/8;
+        #title_my{
+            grid-column: 4/5;
+            grid-row: 1/3;
+            color: #FFB5B0;
+            font-weight: bold;
+            font-size: 720%;
+            margin: 0px;
+            letter-spacing: 10px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
             align-self: center;
             justify-self: center;
         }
-        #tag_under_button{
-            grid-column: 7/12;
-            grid-row: 7/8;
+        #title_muse{
+            grid-column: 5/8;
+            grid-row: 2/4;
+            color: #FFB5B0;
+            font-weight: bold;
+            font-size: 720%;
+            margin: 0px;
+            letter-spacing: 10px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
             align-self: center;
             justify-self: center;
         }
-        #edit_button{
-            background-color: #95efb3;
-            font-family: 'Inter';
-            font-style: normal;
-            font-weight: 700;
-            font-size: 32px;
-            line-height: 39px;
-            color: #FFFFFF;
-            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
-            border-color: white;
+        #logout_button{
+            grid-column: 17/21;
+            grid-row: 1/2;
+            align-self: center;
+            justify-self: center;
         }
-        #delete_button{
-            background-color: #EF9595;
-            font-family: 'Inter';
-            font-style: normal;
-            font-weight: 700;
-            font-size: 32px;
-            line-height: 39px;
-            color: #FFFFFF;
-            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
-            border-color: white;
+
+        #sumple_photo{
+            grid-column: 1/22;
+            grid-row: 4/6;
+            background-color: #ffffffbb;
+            display: inline-flex;
+            gap: 5%;
+            padding: 10px;
+            padding-left: calc(100vw / 10);
+            padding-right: 5%;
+            justify-items: center;
+            align-items: center;
+            overflow: hidden;
         }
-        #add_button{
-            background-color: #A2CAF9;
-            font-family: 'Inter';
-            font-style: normal;
-            font-weight: 700;
-            font-size: 32px;
-            line-height: 39px;
-            color: #FFFFFF;
-            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
-            border-color: white;
+        .sumples{
+            width: auto;
+            height: calc((200vh / 5) - 20px);
+            object-fit: cover;
         }
-        #tag_edit_button{
-            background-color: #95efb3;
-            font-family: 'Inter';
-            font-style: normal;
-            font-weight: 700;
-            font-size: 32px;
-            line-height: 39px;
-            color: #FFFFFF;
-            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
-            border-color: white;
+        #left_move{
+            grid-column: 1/3;
+            grid-row: 4/6;
+            background-color: #ffffffbb;
+            color: #FFB5B0;
+            font-weight: lighter;
+            font-size: 100px;
+            align-self: center;
+            justify-self: center;
         }
-        #tag_delete_button{
-            background-color: #EF9595;
-            font-family: 'Inter';
-            font-style: normal;
-            font-weight: 700;
-            font-size: 32px;
-            line-height: 39px;
-            color: #FFFFFF;
-            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
-            border-color: white;
+        #right_move{
+            grid-column: 20/22;
+            grid-row: 4/6;
+            background-color: #ffffffbb;
+            color: #FFB5B0;
+            font-weight: lighter;
+            font-size: 100px;
+            align-self: center;
+            justify-self: center;
         }
-        #tag_add_button{
-            background-color: #A2CAF9;
-            font-family: 'Inter';
-            font-style: normal;
-            font-weight: 700;
-            font-size: 32px;
-            line-height: 39px;
-            color: #FFFFFF;
-            -webkit-text-stroke: 1px #CCCCCC; /* テキストに輪郭を追加 */
-            border-color: white;
+        #explaination{
+            grid-column: 2/21;
+            grid-row: 6/11;
+            background-color: #ffffffbb;
+            color: #FFB5B0;
+            margin: 40px;
+            padding: 20px;
         }
+        #movie{
+            grid-column: 2/21;
+            grid-row: 11/16;
+            background-color: #ffffffbb;
+            margin: 40px;
+            padding: 20px;
+        }
+        #photo_datas{
+            grid-column: 2/21;
+            grid-row: 16/21;
+            display: grid;
+            background-color: #FFFFFF;
+            grid-template-rows: auto 1fr auto;
+            align-items: start;
+            gap: 10px;
+            margin: 30px;
+            padding: 10px;
+        }
+        #photo_table{
+            height: calc(100vh - 200px);
+            display: grid;
+            align-items: start;
+            gap: 10px;
+            padding: 20px;
+            overflow: hidden;
+            overflow-y: auto;
+            direction: ltr;
+            scrollbar-color: #d4aa70 #e4e4e4;
+            scrollbar-width: thin;
+        }
+        #photo_thead{
+            background-color: #FFB5B0;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        #photo_tbody{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 150px);
+            gap: 10px;
+            padding: 10px;
+        }
+        
+
         #overlay {
             display: none;
             position: fixed;
@@ -116,104 +162,135 @@
             padding: 20px;
             border-radius: 5px;
         }
-
-        #photo_data{
-            grid-column: 3/20;
-            grid-row: 4/7;
-            display: grid;
-            background-color: #FFFFFF;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-            padding: 10px;
+        #photo_form{
+            display: none;
+            justify-content: center;
+            align-items: center;
         }
+        #tag_form{
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
         #photo_data_chaild{
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        footer{
+            grid-column: 1/22;
+            grid-row: 21/22;
+            background-color: #FFB5B0;
+            display: grid;
+            color: #ffffff;
+            font-size: 200%;
+            padding: 10px;
+        }
+        footer p{
+            align-self: center;
+            justify-self: center;
+        }
+
     </style>
 
     {% block content %}
-    <header id="header">
-        <p style="grid-column: 1/3;"></p>
-        <p style="color: azure; font-weight: bold; font-size: 720%; margin: 0px; letter-spacing: 10px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; grid-column: 3/10; align-self: center; justify-self: center;">mymuse</p>
-        <form action="{% url 'logout' %}" method="post" style="grid-column: 10/12; justify-self: center;">
-            {% csrf_token %}
-            <button type="submit">ログアウト</button>
-        </form>
-    </header>
-    <div style="grid-area: 2/2/16/21; background-color: #e4e3e3be; margin-bottom: 70px;
-    margin-top: 70px;"></div>
-    <div>
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+    <div id="title_my">my</div>
+    <div id="title_muse">muse</div>
+    <form action="{% url 'logout' %}" method="post" id="logout_button">
+        {% csrf_token %}
+        <button type="submit">ログアウト</button>
+    </form>
+
+    <div id="sumple_photo">
+        <img class="sumples" src="http://127.0.0.1:8000/media/sumple1.jpg" alt="sumple1">
+        <img class="sumples" src="http://127.0.0.1:8000/media/sumple2.jpg" alt="sumple2">
+        <img class="sumples" src="http://127.0.0.1:8000/media/sumple3.jpg" alt="sumple3">
     </div>
-    <div id="photo_data">
-        {% for item in obj %}
-        <tr>
-            <td>{{ item.description }}</td>
-            <div style="background-color: #A2CAF9; border: solid 1px coral;">
-                <div id="photo_data_chaild">{{ item.title }}</div>
-                <div id="photo_data_chaild">{{ item.detailed_title }}</div>
-                <div id="photo_data_chaild">{{ item.time }}</div>
-                <div id="photo_data_chaild">{{ item.tag }}</div>
-                <div id="photo_data_chaild">{{ item.photo_num}}</div>
-                <div id="photo_data_chaild"><img src="{{ MEDIA_URL }}{{ item.content }}" alt="{{ MEDIA_URL }}{{ item.content }}" width="100" height="100"/></div>
-                <br>
-            </div>
-            <td>{{ item.uploaded_at }}</td>
-        <tr>
-        {% endfor %}
-    </div>
-    <div id="under_button">
-        <button id="add_button">
-            写真追加
-        </button>
-        <button id="edit_button">
-            写真編集
-        </button>
-        <button id="delete_button">
-            写真削除
-        </button>
+    <div id="left_move"><</div>
+    <div id="right_move">></div>
+
+    <div id="explaination">
+        <pre>
+            ここに説明文を入れる
+        </pre>
     </div>
 
-    <div id="tag_under_button">
-        <button id="tag_add_button">
-            tag追加
-        </button>
-        <button id="tag_edit_button">
-            tag編集
-        </button>
-        <button id="tag_delete_button">
-            tag削除
-        </button>
+    <div id="movie">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/8ZP5eqm4JqM?si=01SGoD-E7-ALTqRY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    <div id="photo_datas">
+        <div id="photo_tag_buttom">
+            <button id="tag_add">tag追加</button>
+            <button>tag削除</button>
+        </div>
+        <div id="photo_table">
+            {% for tags in tag_obj%}
+                <div id="photo_thead">Tag:{{ tags.tag }}</div>
+                <div id="photo_tbody">
+                    {% for photos in obj %}
+                        {% if photos.tag == tags.tag %}
+                        <div id="photo_data_chaild">
+                            <img src="{{ MEDIA_URL }}{{ photos.content }}" alt="{{ MEDIA_URL }}{{ photos.content }}" width="100" height="100"/>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <div>
+            <button id="add_button">写真追加</button>
+            <button>写真編集</button>
+            <button>写真削除</button>
+        </div>
     </div>
 
     <div id="overlay">
         <div id="overlayContent">
-            <form method="post" enctype="multipart/form-data">
+            <form id="photo_form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit">Upload</button>
             </form>
+            <form id="tag_form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ tag_form.as_p }}
+                <button type="submit">Upload</button>
+            </form>
         </div>
     </div>
+
+    <footer>
+        <p>team shirohata</p>
+    </footer>
+
     {% endblock %}
     <script>
         document.getElementById("add_button").addEventListener("click", function() {
         document.getElementById("overlay").style.display = "block";
+        document.getElementById("photo_form").style.display = "block";
         });
 
         document.getElementById("overlay").addEventListener("click", function() {
         document.getElementById("overlay").style.display = "none";
+        document.getElementById("photo_form").style.display = "none";
+        });
+
+        document.getElementById("overlayContent").addEventListener("click", function(event) {
+        event.stopPropagation(); // クリックイベントの伝播を停止する
+        });
+    </script>
+    <script>
+        document.getElementById("tag_add").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("tag_form").style.display = "block";
+        });
+
+        document.getElementById("overlay").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("tag_form").style.display = "none";
         });
 
         document.getElementById("overlayContent").addEventListener("click", function(event) {

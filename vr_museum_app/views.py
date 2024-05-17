@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import PhotoForm, TagForm
-from .models import Photo
+from .models import Photo, Tag
 from .serializers import PhotoSerializer, UserSerializer
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,8 @@ def user_create(request):
             user = User.objects.create_user(username=new_username, password=new_password)
             # ログメッセージ作成
             logger.info('ユーザーの作成に成功しました。ユーザー名: %s', new_username)
+            # タグを自動的に追加
+            Tag.objects.create(user=user, tag='s1')
         except Exception as e:
             # ログメッセージ作成
             logger.error('ユーザーの作成に失敗しました。エラー: %s', e)
@@ -86,6 +88,7 @@ def index(request):
             with transaction.atomic():  # トランザクションを開始
                 photo = form.save(commit=False)
                 photo.user = request.user
+                tags = request.POST.getlist('tag')
 
                 image_file = request.FILES['content']
                 image = Image.open(io.BytesIO(image_file.read()))
@@ -111,12 +114,15 @@ def index(request):
             tag_form = TagForm(request.POST)
             if tag_form.is_valid():
                 tag = tag_form.save(commit=False)
+                tag.user = request.user
                 tag.save()
             return redirect('title')
     else:
-        form = PhotoForm()
-        obj = Photo.objects.all().order_by('photo_num')
-    return render(request, 'index.html', {'form': form, 'obj': obj, 'MEDIA_URL': settings.MEDIA_URL})
+        form = PhotoForm(user = request.user)
+        tag_form = TagForm(user = request.user)
+        obj = Photo.objects.filter(user=request.user).order_by('photo_num')
+        tag_obj = Tag.objects.filter(user=request.user)
+    return render(request, 'index.html', {'form': form, 'tag_form' : tag_form, 'obj': obj, 'tag_obj' : tag_obj, 'MEDIA_URL': settings.MEDIA_URL})
 
 
 
