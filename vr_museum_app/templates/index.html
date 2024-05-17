@@ -12,7 +12,7 @@
         /* 501138 1 */
         body{
             display: grid;
-            background: linear-gradient(0deg, rgba(255, 224, 178, 0.2), rgba(255, 224, 178, 0.2)), url("http://127.0.0.1:8000/media/background_img.jpg");
+            background: linear-gradient(0deg, rgba(255, 224, 178, 0.2), rgba(255, 224, 178, 0.2)), url("{{ MEDIA_URL }}/background_img.jpg");
             background-size: 100vw 100vh;  /* 背景画像の横幅をコンテナに合わせ、縦幅を自動調整 */
             background-repeat: no-repeat;  /* 背景画像の繰り返しを無効化 */
             background-attachment: fixed;  /* 背景画像を固定する */
@@ -204,9 +204,9 @@
     </form>
 
     <div id="sumple_photo">
-        <img class="sumples" src="http://127.0.0.1:8000/media/sumple1.jpg" alt="sumple1">
-        <img class="sumples" src="http://127.0.0.1:8000/media/sumple2.jpg" alt="sumple2">
-        <img class="sumples" src="http://127.0.0.1:8000/media/sumple3.jpg" alt="sumple3">
+        <img class="sumples" src="{{ MEDIA_URL }}/sumple1.jpg" alt="sumple1">
+        <img class="sumples" src="{{ MEDIA_URL }}/sumple2.jpg" alt="sumple2">
+        <img class="sumples" src="{{ MEDIA_URL }}/sumple3.jpg" alt="sumple3">
     </div>
     <div id="left_move"><</div>
     <div id="right_move">></div>
