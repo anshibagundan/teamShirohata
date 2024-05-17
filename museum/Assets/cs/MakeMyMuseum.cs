@@ -9,8 +9,7 @@ using Newtonsoft.Json;
 
 public class MakeMyMuseum : MonoBehaviour
 {
-    private List<string> v = new List<string>{};
-    //↑最終的にはtagで判別するかも…
+    private List<string> v = new List<string>{};//s1,s2,...は廊下でに1,r1,r1,r2,r2,...は部屋に画像を配置する判別リスト
         
     public GameObject streetPrefab; 
     public GameObject roomPrefab; 
@@ -163,7 +162,7 @@ public class MakeMyMuseum : MonoBehaviour
         for (int i = 0; i < v.Count;)
         {
             
-            if (v[i] == "s")
+            if (v[i].Contains("s"))
             {
                 // 通路
                 Vector3 position = startPosition + streetNum * positionOffset;
@@ -177,7 +176,7 @@ public class MakeMyMuseum : MonoBehaviour
                 exhibitNum++;
                 //current = current.NextPhoto;
                 
-                while (i < v.Count && v[i] == "s")
+                while (i < v.Count && v[i].Contains("s"))
                 {
                     current = current.NextPhoto;
 
