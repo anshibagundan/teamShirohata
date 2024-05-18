@@ -6,9 +6,8 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from vr_museum_app.views import (PhotoModelListView, PhotoViewSet,
-                                 UserModelListView,
-                                 get_tag_choices_and_photo_num_choices, index,
-                                 user_create, user_login)
+                                 UserModelListView, index, user_create,
+                                 user_login)
 
 router = DefaultRouter()
 router.register(r'photos', PhotoViewSet)
@@ -22,5 +21,4 @@ urlpatterns = [
     path('home/', index, name='title'),
     path('api/photo_model/', PhotoModelListView.as_view(), name='photo_model_list'),
     path('api/user_model/', UserModelListView.as_view(), name='user_model_list'),
-    path('get_tag_choices_and_photo_num_choices/', get_tag_choices_and_photo_num_choices, name='get_tag_choices_and_photo_num_choices'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

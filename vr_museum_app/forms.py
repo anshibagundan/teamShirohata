@@ -5,7 +5,13 @@ from .models import Photo, Tag
 
 
 class PhotoForm(forms.ModelForm):
-    tag = forms.ModelChoiceField(queryset=Tag.objects.none(), required=True, label='Tag', widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_tag', 'onchange' : 'updatePhotoNumOptions()'}))
+    tag = forms.ModelChoiceField(
+        queryset=Tag.objects.none(),
+        required=True,
+        label='Tag',
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_tag', 'onchange' : 'updatePhotoNumOptions()'}),
+        empty_label="--選択してください--"
+    )
 
     class Meta:
         model = Photo
@@ -20,7 +26,10 @@ class PhotoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         username = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        tag_choices = [(tag.tag, tag.tag) for tag in Tag.objects.filter(user=username)]
+        tags = Tag.objects.filter(user=username)
+        tag_choices = [('', '--選択してください--')]  # 空のチョイスを追加
+        for tag in tags:
+            tag_choices.append((tag.tag, tag.tag))  # 全てのタグを追加
         self.fields['tag'].choices = tag_choices
 
 class TagForm(forms.ModelForm):

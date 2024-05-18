@@ -1,18 +1,12 @@
 import io
 import logging
-from io import BytesIO
 
-import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views import generic
-from django.views.decorators.http import require_GET
+from django.shortcuts import redirect, render
 from PIL import Image
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
@@ -141,43 +135,6 @@ def index(request):
         obj = Photo.objects.filter(user=request.user).order_by('photo_num')
         tag_obj = Tag.objects.filter(user=request.user)
     return render(request, 'index.html', {'form': form, 'tag_form' : tag_form, 'tag_form_delete' : tag_form_delete, 'obj': obj, 'tag_obj' : tag_obj, 'MEDIA_URL': settings.MEDIA_URL, 'tag_form': tag_form, 'tag_form_delete': tag_form_delete,})
-
-
-@require_GET
-def get_tag_choices_and_photo_num_choices(request):
-
-    # デバッグ用にリクエストヘッダーを表示
-    logger.info(f"Request Headers: {request.headers}")
-
-    # Ajaxリクエストの確認
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        logger.info('This is an AJAX request')
-        tag_input = request.GET.get('tag_input')
-        logger.info(f"Received tag_input: {tag_input}")  # デバッグ用に表示
-        
-        if tag_input:
-            try:
-                tag = Tag.objects.get(user=request.user, tag=tag_input)
-                existing_photos = Photo.objects.filter(tag=tag)
-                if existing_photos:
-                    min_photo_num = existing_photos.order_by('photo_num').first().photo_num
-                    max_photo_num = existing_photos.order_by('-photo_num').first().photo_num + 1
-                    photo_num_choices = [(str(num), str(num)) for num in range(min_photo_num, max_photo_num)]
-                else:
-                    max_photo_num = Photo.objects.count() + 1
-                    photo_num_choices = [(str(max_photo_num), str(max_photo_num))]
-            except Exception as e:
-                logger.error(f"Error: {e}")  # エラーメッセージを表示
-                return JsonResponse({'error': str(e)}, status=500)
-        else:
-            logger.warning("tag_input parameter is missing")  # デバッグ用に表示
-            return JsonResponse({'error': 'tag_input parameter is missing'}, status=400)
-    else:
-        logger.warning("This is not an AJAX request")  # デバッグ用に表示
-        return JsonResponse({'error': 'This is not an AJAX request'}, status=400)
-    
-    # 全ての分岐でレスポンスを返すためにデフォルトのエラーレスポンスを追加
-    return JsonResponse({'error': 'Unhandled request'}, status=500)
 
 class PhotoModelListView(APIView):
     serializer_class = PhotoSerializer
