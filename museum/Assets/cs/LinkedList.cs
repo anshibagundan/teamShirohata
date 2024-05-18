@@ -55,8 +55,10 @@ public class LinkedList{
 
     //最初のLinkedPhotoを引き渡す
     public LinkedPhoto First(){
+       
         return first_;
     }
+   
     //追加する
     public void Append(string title, string detailedTitle, string time, GameObject picture, float height, float width, string tag, int photoNum){
         LinkedPhoto photo = new LinkedPhoto(title, detailedTitle, time, picture, height, width, tag, photoNum);
@@ -68,6 +70,14 @@ public class LinkedList{
             photo.PreviousPhoto = last_;
             last_.NextPhoto = photo;
             last_ = photo;
+        }
+    }
+
+    public void SorR(List<string> list){
+        LinkedPhoto current = first_;
+        while(current != null){
+            list.Add(current.tag_);
+            current = current.NextPhoto;
         }
     }
 
