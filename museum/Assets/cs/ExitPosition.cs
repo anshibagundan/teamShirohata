@@ -17,6 +17,7 @@ public class ExitPosition : MonoBehaviour
     {
         //int streetNum = MuseumMaker.streetNum;
         int streetNum = MakeMyMuseum.streetNum;
+        Debug.Log(streetNum);
         
         transform.position += positionOffset*streetNum;
     }

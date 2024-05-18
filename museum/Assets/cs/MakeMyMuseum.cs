@@ -168,12 +168,17 @@ public class MakeMyMuseum : MonoBehaviour
                 streetNum++;
                 // 写真
                 // Instantiate(exhibitPrefab, position + exhibitStart, Quaternion.identity, parentInstance.transform);
-                current.SetUp(position + exhibitStart,rot );
+                if (current != null)
+                {
+                    current.SetUp(position + exhibitStart, rot);
+                }
                 //current.gameObject.transform.parent = parentInstance.transform;
                 
                 i++;
                 exhibitNum++;
-                current = current.NextPhoto;
+                if(current.NextPhoto != null){
+                    current = current.NextPhoto;
+                }
                 
                 while (i < v.Count && v[i] == "S")
                 {
@@ -209,12 +214,17 @@ public class MakeMyMuseum : MonoBehaviour
 
                 // 写真
                 Quaternion rotation = Quaternion.Euler(roomPhotoRote[exhibitNum]);
-                current.SetUp(roomPhotoPos[exhibitNum] + position, rotation);
+                if (current != null)
+                {
+                    current.SetUp(roomPhotoPos[exhibitNum] + position, rotation);
+                }
                 //Instantiate(exhibitPrefab, roomPhotoPos[exhibitNum] + position, rotation, parentInstance.transform);
 
                 exhibitNum++;
                 i++;
-                current = current.NextPhoto;
+                if(current.NextPhoto != null){
+                    current = current.NextPhoto;
+                }
 
                 while (i < v.Count && v[i] == roomName)
                 {
@@ -223,7 +233,10 @@ public class MakeMyMuseum : MonoBehaviour
                     {
                         // 写真
                         rotation = Quaternion.Euler(roomPhotoRote[exhibitNum]);
-                        current.SetUp(roomPhotoPos[exhibitNum] + position, rotation);
+                        if (current != null)
+                        {
+                            current.SetUp(roomPhotoPos[exhibitNum] + position, rotation);
+                        }
                         //Instantiate(exhibitPrefab, roomPhotoPos[exhibitNum]+position, rotation, parentInstance.transform);
                     }else if(current.NextPhoto != null){
                         current = current.NextPhoto;
@@ -235,6 +248,7 @@ public class MakeMyMuseum : MonoBehaviour
                 }
                 exhibitNum = 0;
             }
+            
             
             
         }
