@@ -5,7 +5,7 @@ from .models import Photo, Tag
 
 
 class PhotoForm(forms.ModelForm):
-    tag = forms.ModelChoiceField(queryset=Tag.objects.none(), required=True, label='Tag', widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_tag'}))
+    tag = forms.ModelChoiceField(queryset=Tag.objects.none(), required=True, label='Tag', widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_tag', 'onchange' : 'updatePhotoNumOptions()'}))
 
     class Meta:
         model = Photo
@@ -20,7 +20,8 @@ class PhotoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         username = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.fields['tag'].queryset = Tag.objects.filter(user=username)
+        tag_choices = [(tag.tag, tag.tag) for tag in Tag.objects.filter(user=username)]
+        self.fields['tag'].choices = tag_choices
 
 class TagForm(forms.ModelForm):
     class Meta:
@@ -29,21 +30,26 @@ class TagForm(forms.ModelForm):
         widgets = {
             'tag': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
     def __init__(self, *args, **kwargs):
-        username = kwargs.pop('user', None)  # ユーザーを取得
+        username = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+
         # r タグの個数を取得
-        r_count = Tag.objects.filter(tag__startswith='r', user = username).count() + 1
+        r_count = Tag.objects.filter(tag__startswith='r', user=username).count() + 1
         # s タグの個数を取得
-        s_count = Tag.objects.filter(tag__startswith='s', user = username).count() + 1
+        s_count = Tag.objects.filter(tag__startswith='s', user=username).count() + 1
 
         # 選択肢を動的に設定する
-        choices = [('r{}'.format(r_count), 'r{}'.format(r_count))]
-        choices += [('s{}'.format(s_count), 's{}'.format(s_count))]
-
-
+        choices = [
+            ('r{}'.format(r_count), 'r{}'.format(r_count)),
+            ('s{}'.format(s_count), 's{}'.format(s_count)),
+        ]
         # tag フィールドの選択肢を更新する
-        self.fields['tag'].widget = forms.Select(choices=choices, attrs={'class': 'form-control'})
+        self.fields['tag'].widget = forms.Select(
+            choices=[(option, option) for option in [choice[1] for choice in choices]],
+            attrs={'class': 'form-control'}
+        )
 
 class TagForm_delete(forms.ModelForm):
     tag = forms.ModelChoiceField(queryset=Tag.objects.none(), required=True, label='Tag', widget=forms.Select(attrs={'class': 'form-control'}))

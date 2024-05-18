@@ -137,7 +137,7 @@
             font-weight: bold;
             border-radius: 5px;
         }
-        #photo_tbody{
+        .photo_tbody{
             display: grid;
             grid-template-columns: repeat(auto-fill, 150px);
             gap: 10px;
@@ -180,7 +180,7 @@
             align-items: center;
         }
 
-        #photo_data_chaild{
+        .photo_data_chaild{
             display: flex;
             justify-content: center;
             align-items: center;
@@ -250,11 +250,12 @@
         <div id="photo_table">
             {% for tags in tag_obj%}
                 <div id="photo_thead">Tag:{{ tags.tag }}</div>
-                <div id="photo_tbody">
+                <div class="photo_tbody" id="{{tags.tag}}">
                     {% for photos in obj %}
                         {% if photos.tag == tags.tag %}
-                        <div id="photo_data_chaild">
+                        <div class="photo_data_chaild">
                             <img src="{{ MEDIA_URL }}{{ photos.content }}" alt="{{ MEDIA_URL }}{{ photos.content }}" width="auto" height="100"/>
+                            <div id="{{ photos.photo_num }}"></div>
                         </div>
                         {% endif %}
                     {% endfor %}
@@ -273,9 +274,10 @@
             <form id="photo_form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <div class="form-group" id="photo-num-field" style="display: block;">
-                    <select name="photo_num" id="photo-num-select" class="form-control"></select>
-                </div>
+                <label for="photo_num">写真番号：</label>
+                <select name="photo_num" id="tag_select" style="width: 75px;">
+                </select>
+                <br>
                 <button type="submit">Upload</button>
             </form>
             <form id="tag_form" method="post" enctype="multipart/form-data">
@@ -391,6 +393,65 @@
         document.getElementById("right_move").addEventListener("click", function() {
             smoothScroll(document.getElementById("sumple_photo"), 1, 400, 500); // Scroll right by 400px over 500ms
         });
+    </script>
+    <script>
+function getPhotoNumOptions(tagId) {
+    // クラス名がphoto_tbodyのすべての要素を取得
+    var photoTbodyElements = document.getElementsByClassName('photo_tbody');
+    var ids = [];
+    
+    // 各要素のidとtagIdを比較
+    for (var i = 0; i < photoTbodyElements.length; i++) {
+        var element = photoTbodyElements[i];
+        
+        // idが一致するかどうかを確認
+        if (element.id === tagId) {
+            // 一致する場合、子要素を取得
+            var children = element.children;
+            if (children.length > 0){
+                for (var j = 0; j < children.length; j++) {
+                    var child = children[j];
+                    
+                    // 子要素のさらに子要素の二つ目のIDを取得
+                    if (child.children.length >= 2) {
+                        ids.push(child.children[1].id);
+                    }
+                }
+                ids.push(Math.max.apply(null, ids) + 1);
+            }else{
+                ids.push(document.getElementsByClassName('photo_data_chaild').length + 1);
+            }
+        }
+    }
+    
+    return ids;
+}
+
+
+        function updatePhotoNumOptions() {
+            const tagSelect = document.getElementById('id_tag');
+            const selectedTagId = tagSelect.value;
+            const photoNumContainer = document.getElementById('tag_select');
+
+            // 既存の写真番号フィールドを削除
+            photoNumContainer.innerHTML = '';
+
+            const photoNumOptions = getPhotoNumOptions(selectedTagId);
+            photoNumOptions.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                photoNumContainer.appendChild(optionElement);
+                photoNumContainer.appendChild(document.createElement('br'));
+            });
+
+            // タグが選択されていない場合は写真番号フィールドを非表示
+            if (selectedTagId === '') {
+                photoNumContainer.style.display = 'none';
+            } else {
+                photoNumContainer.style.display = 'block';
+            }
+        }
     </script>
 
     {% if alert_message %}
