@@ -5,8 +5,7 @@ from .models import Photo, Tag
 
 
 class PhotoForm(forms.ModelForm):
-    photo_num = forms.ChoiceField(choices=[], required=True, label='写真番号')
-    tag = forms.ModelChoiceField(queryset=Tag.objects.none(), required=True, label='Tag', widget=forms.Select(attrs={'class': 'form-control'}))
+    tag = forms.ModelChoiceField(queryset=Tag.objects.none(), required=True, label='Tag', widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_tag'}))
 
     class Meta:
         model = Photo
@@ -21,9 +20,6 @@ class PhotoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         username = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        # photo_num の選択肢を設定する
-        choices = [(i, str(i)) for i in range(1, Photo.objects.count() + 2)]
-        self.fields['photo_num'].choices = choices
         self.fields['tag'].queryset = Tag.objects.filter(user=username)
 
 class TagForm(forms.ModelForm):
@@ -48,3 +44,17 @@ class TagForm(forms.ModelForm):
 
         # tag フィールドの選択肢を更新する
         self.fields['tag'].widget = forms.Select(choices=choices, attrs={'class': 'form-control'})
+
+class TagForm_delete(forms.ModelForm):
+    tag = forms.ModelChoiceField(queryset=Tag.objects.none(), required=True, label='Tag', widget=forms.Select(attrs={'class': 'form-control'}))
+    class Meta:
+        model = Tag
+        fields = ('tag',)
+        widgets = {
+            'tag': forms.CheckboxSelectMultiple(),  # チェックボックスを使用する
+        }
+    def __init__(self, *args, **kwargs):
+        username = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        # タグの選択肢を設定する
+        self.fields['tag'].queryset = Tag.objects.filter(user=username)

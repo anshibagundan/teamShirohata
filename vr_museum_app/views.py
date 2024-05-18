@@ -9,14 +9,15 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.shortcuts import redirect, render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
 from PIL import Image
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .forms import PhotoForm, TagForm
+from .forms import PhotoForm, TagForm, TagForm_delete
 from .models import Photo, Tag
 from .serializers import PhotoSerializer, UserSerializer
 
@@ -84,6 +85,7 @@ def index(request):
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES)
         Tag_form = TagForm(request.POST)
+        tag_form_delete = TagForm_delete(request.POST)
         if form.is_valid():
             with transaction.atomic():  # トランザクションを開始
                 photo = form.save(commit=False)
@@ -110,21 +112,34 @@ def index(request):
                 photo.save()
             return redirect('title')
         
-        elif Tag_form.is_valid():
-            tag_form = TagForm(request.POST)
+        elif 'delete_tag' in request.POST:
+            tag_form_delete = TagForm_delete(request.POST, user=request.user)
+            if tag_form_delete.is_valid():
+                selected_tag = tag_form_delete.cleaned_data['tag']
+                if not Photo.objects.filter(tag=selected_tag).exists():
+                    selected_tag.delete()
+                    messages.success(request, 'タグが削除されました。')
+                    return redirect('title')
+                else:
+                    alert_message = f'写真がタグ "{selected_tag}" に関連付けられているため、削除できませんでした。'
+                    messages.warning(request, alert_message)
+                    return render(request, 'index.html', {'alert_message': alert_message})
+        
+        elif 'add_tag' in request.POST:
+            tag_form = TagForm(request.POST, user=request.user)
             if tag_form.is_valid():
                 tag = tag_form.save(commit=False)
                 tag.user = request.user
                 tag.save()
+                messages.success(request, 'タグが追加されました。')
             return redirect('title')
     else:
         form = PhotoForm(user = request.user)
         tag_form = TagForm(user = request.user)
+        tag_form_delete = TagForm_delete(user = request.user)
         obj = Photo.objects.filter(user=request.user).order_by('photo_num')
         tag_obj = Tag.objects.filter(user=request.user)
-    return render(request, 'index.html', {'form': form, 'tag_form' : tag_form, 'obj': obj, 'tag_obj' : tag_obj, 'MEDIA_URL': settings.MEDIA_URL})
-
-
+    return render(request, 'index.html', {'form': form, 'tag_form' : tag_form, 'tag_form_delete' : tag_form_delete, 'obj': obj, 'tag_obj' : tag_obj, 'MEDIA_URL': settings.MEDIA_URL, 'tag_form': tag_form, 'tag_form_delete': tag_form_delete,})
 
 class PhotoModelListView(APIView):
     serializer_class = PhotoSerializer

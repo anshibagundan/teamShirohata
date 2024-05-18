@@ -46,9 +46,10 @@
         }
         #logout_button{
             grid-column: 17/21;
-            grid-row: 1/2;
+            grid-row: 21/22;
             align-self: center;
             justify-self: center;
+            color: #FFFFFF;
         }
 
         #sumple_photo{
@@ -59,7 +60,8 @@
             gap: 5%;
             padding: 10px;
             padding-left: calc(100vw / 10);
-            padding-right: 5%;
+            padding-right: 10%;
+            padding-left: 10%;
             justify-items: center;
             align-items: center;
             overflow: hidden;
@@ -116,7 +118,7 @@
             padding: 10px;
         }
         #photo_table{
-            height: calc(100vh - 200px);
+            height: calc(100vh - 225px);
             display: grid;
             align-items: start;
             gap: 10px;
@@ -172,6 +174,11 @@
             justify-content: center;
             align-items: center;
         }
+        #tag_form_delete{
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
 
         #photo_data_chaild{
             display: flex;
@@ -179,6 +186,23 @@
             align-items: center;
         }
 
+        .btn-flat-vertical-border {
+        position: relative;
+        display: inline-block;
+        font-weight: bold;
+        padding: 0.5em 1em;
+        text-decoration: none;
+        border-left: solid 4px #668ad8;
+        border-right: solid 4px #668ad8;
+        color: #668ad8;
+        background: #e1f3ff;
+        transition: .4s;
+        }
+
+        .btn-flat-vertical-border:hover {
+        background: #668ad8;
+        color: #FFF;
+        }
         footer{
             grid-column: 1/22;
             grid-row: 21/22;
@@ -198,15 +222,12 @@
     {% block content %}
     <div id="title_my">my</div>
     <div id="title_muse">muse</div>
-    <form action="{% url 'logout' %}" method="post" id="logout_button">
-        {% csrf_token %}
-        <button type="submit">ログアウト</button>
-    </form>
 
     <div id="sumple_photo">
         <img class="sumples" src="{{ MEDIA_URL }}/sumple1.jpg" alt="sumple1">
         <img class="sumples" src="{{ MEDIA_URL }}/sumple2.jpg" alt="sumple2">
         <img class="sumples" src="{{ MEDIA_URL }}/sumple3.jpg" alt="sumple3">
+        <img class="sumples" src="{{ MEDIA_URL }}/sumple4.jpg" alt="sumple4">
     </div>
     <div id="left_move"><</div>
     <div id="right_move">></div>
@@ -223,8 +244,8 @@
 
     <div id="photo_datas">
         <div id="photo_tag_buttom">
-            <button id="tag_add">tag追加</button>
-            <button>tag削除</button>
+            <div class="btn-flat-vertical-border" id="tag_add">tag追加</div>
+            <div class="btn-flat-vertical-border" id="tag_delete">tag削除</div>
         </div>
         <div id="photo_table">
             {% for tags in tag_obj%}
@@ -241,9 +262,9 @@
             {% endfor %}
         </div>
         <div>
-            <button id="add_button">写真追加</button>
-            <button>写真編集</button>
-            <button>写真削除</button>
+            <div class="btn-flat-vertical-border" id="add_button">写真追加</div>
+            <div class="btn-flat-vertical-border">写真編集</div>
+            <div class="btn-flat-vertical-border">写真削除</div>
         </div>
     </div>
 
@@ -252,12 +273,20 @@
             <form id="photo_form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
+                <div class="form-group" id="photo-num-field" style="display: block;">
+                    <select name="photo_num" id="photo-num-select" class="form-control"></select>
+                </div>
                 <button type="submit">Upload</button>
             </form>
             <form id="tag_form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ tag_form.as_p }}
-                <button type="submit">Upload</button>
+                <button type="submit" name="add_tag">Upload</button>
+            </form>
+            <form id="tag_form_delete" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ tag_form_delete.as_p }}
+                <button type="submit" name="delete_tag">Delete</button>
             </form>
         </div>
     </div>
@@ -265,8 +294,31 @@
     <footer>
         <p>team shirohata</p>
     </footer>
+    <a id="logout_button">ログアウト</a>
 
     {% endblock %}
+    <script>
+        document.getElementById("logout_button").addEventListener("click", function(event) {
+        event.preventDefault(); // デフォルトのリンク動作を防ぐ
+
+        // フォームを作成
+        var form = document.createElement("form");
+        form.method = "post";
+        form.action = "{% url 'logout' %}";
+
+        // CSRFトークンを追加
+        var csrfToken = document.createElement("input");
+        csrfToken.type = "hidden";
+        csrfToken.name = "csrfmiddlewaretoken";
+        csrfToken.value = "{{ csrf_token }}"; // Djangoのテンプレートタグを使用
+
+        form.appendChild(csrfToken);
+
+        // フォームをドキュメントに追加して送信
+        document.body.appendChild(form);
+        form.submit();
+    });
+    </script>
     <script>
         document.getElementById("add_button").addEventListener("click", function() {
         document.getElementById("overlay").style.display = "block";
@@ -297,5 +349,54 @@
         event.stopPropagation(); // クリックイベントの伝播を停止する
         });
     </script>
+    <script>
+        document.getElementById("tag_delete").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("tag_form_delete").style.display = "block";
+        });
+
+        document.getElementById("overlay").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("tag_form_delete").style.display = "none";
+        });
+
+        document.getElementById("overlayContent").addEventListener("click", function(event) {
+        event.stopPropagation(); // クリックイベントの伝播を停止する
+        });
+    </script>
+    <script>
+        function smoothScroll(element, direction, distance, duration) {
+            const start = element.scrollLeft;
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1); // Ensure progress does not exceed 1
+                const easeInOutQuad = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress; // Easing function
+
+                element.scrollLeft = start + direction * distance * easeInOutQuad;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        document.getElementById("left_move").addEventListener("click", function() {
+            smoothScroll(document.getElementById("sumple_photo"), -1, 400, 500); // Scroll left by 400px over 500ms
+        });
+
+        document.getElementById("right_move").addEventListener("click", function() {
+            smoothScroll(document.getElementById("sumple_photo"), 1, 400, 500); // Scroll right by 400px over 500ms
+        });
+    </script>
+
+    {% if alert_message %}
+    <script>
+        alert('{{ alert_message }}');
+    </script>
+    {% endif %}
 </body>
 </html>
