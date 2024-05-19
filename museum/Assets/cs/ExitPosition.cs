@@ -12,7 +12,7 @@ public class ExitPosition : MonoBehaviour
     void Start()
     {
         // 1秒後にStartMuseumメソッドを呼び出す
-        Invoke("MoveExit", 1f);
+        Invoke("MoveExit", 5f);
     }
 
     void MoveExit()
