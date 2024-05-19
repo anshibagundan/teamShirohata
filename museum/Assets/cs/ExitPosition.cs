@@ -18,7 +18,7 @@ public class ExitPosition : MonoBehaviour
     void MoveExit()
     {
         //int streetNum = MuseumMaker.streetNum;
-        int streetNum = MakeMyMuseum.streetNum;
+        int streetNum = MakeMyMuseum.streetNum + 1;
         
         transform.position += positionOffset*streetNum;
 
