@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import PhotoForm, TagForm, TagForm_delete
-from .models import Photo
+from .models import Photo, Tag
 from .serializers import PhotoSerializer, UserSerializer
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,7 @@ def user_create(request):
             user = User.objects.create_user(username=new_username, password=new_password)
             # ログメッセージ作成
             logger.info('ユーザーの作成に成功しました。ユーザー名: %s', new_username)
+            Tag.objects.create(user=user, tag='s1')
         except Exception as e:
             # ログメッセージ作成
             logger.error('ユーザーの作成に失敗しました。エラー: %s', e)
