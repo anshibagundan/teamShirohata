@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0%;
+            display: grid;
+            grid-template-columns: repeat(21,1fr);
+            grid-template-rows: repeat(15,1fr);
+            background-image: url("https://thumb.ac-illust.com/91/91ffbe97308bb4d559bed7717178fe9c_t.jpeg");
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+        header{
+            grid-area: 1/1/2/22;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: repeat(11,1fr);
+            grid-template-rows: repeat(7,1fr);
+        }
+        #title_photo{
+            grid-area: 2/2/5/6;
+            background-image: url("https://thumb.photo-ac.com/af/af5eff1467ca2d49186445dede31d137_t.jpeg");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            box-shadow: 30px 30px 0px 0px #AAAAAAAA; /* 影の追加 */
+        }
+        #title_my{
+            grid-area: 4/7/6/10;
+            font-size: 128px;
+            color: #444444;
+            text-align: center;
+            align-self: center;
+            justify-self: center;
+        }
+        #title_muse{
+            grid-area: 6/8/8/12;
+            font-size: 128px;
+            color: #444444;
+            text-align: center;
+            align-self: center;
+            justify-self: center;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}
+    <header>
+        <div id="title_photo"></div>
+        <div id="title_my">my</div>
+        <div id="title_muse">muse</div>
+    </header>
+    <main>        
+        <a href="{% url 'login_create' %}">新規作成</a>        
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <label for="username">ユーザー名:</label>
+            <input type="text" id="username" name="username">
+            <br>
+            <label for="userpassword">パスワード教えろ:</label>
+            <input type="password" id="userpassword" name="password">
+            <br>
+            <button type="submit">決定</button>
+        </form>
+    </main>
+    <footer>
+
+    </footer>
+    {% endblock %}
+</body>
+</html>
