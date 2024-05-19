@@ -80,10 +80,10 @@ from django.db import transaction
 def index(request):
     obj = Photo.objects.all()
     if request.method == 'POST':
-        form = PhotoForm(request.POST, request.FILES)
-        Tag_form = TagForm(request.POST)
+        form = PhotoForm(request.POST, request.FILES, user=request.user)
+        tag_form = TagForm(request.POST, user=request.user)
         if form.is_valid():
-            with transaction.atomic():  # トランザクションを開始
+            with transaction.atomic():  # Start a transaction
                 photo = form.save(commit=False)
                 photo.user = request.user
 
@@ -97,7 +97,7 @@ def index(request):
                 if new_photo_num > max_photo_num:
                     photo.photo_num = max_photo_num
                 else:
-                    # 既存のデータの番号をシフトする
+                    # Shift existing photo numbers
                     qs = Photo.objects.filter(photo_num__gte=new_photo_num).order_by('-photo_num')
                     for p in qs:
                         p.photo_num += 1
@@ -107,16 +107,16 @@ def index(request):
                 photo.save()
             return redirect('title')
         
-        elif Tag_form.is_valid():
-            tag_form = TagForm(request.POST)
-            if tag_form.is_valid():
-                tag = tag_form.save(commit=False)
-                tag.save()
+        elif tag_form.is_valid():
+            tag = tag_form.save(commit=False)
+            tag.user = request.user
+            tag.save()
             return redirect('title')
     else:
-        form = PhotoForm()
+        form = PhotoForm(user=request.user)
+        tag_form = TagForm(user=request.user)
         obj = Photo.objects.all().order_by('photo_num')
-    return render(request, 'index.html', {'form': form, 'obj': obj, 'MEDIA_URL': settings.MEDIA_URL})
+    return render(request, 'index.html', {'form': form, 'tag_form' : tag_form, 'obj': obj, 'MEDIA_URL': settings.MEDIA_URL})
 
 
 

@@ -315,10 +315,20 @@
 
     <div id="overlay">
         <div id="overlayContent">
-            <form method="post" enctype="multipart/form-data">
+            <form id="photo_form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit">Upload</button>
+            </form>
+            <form id="tag_form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ tag_form.as_p }}
+                <button type="submit" name="add_tag">Upload</button>
+            </form>
+            <form id="tag_form_delete" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ tag_form_delete.as_p }}
+                <button type="submit" name="delete_tag">Delete</button>
             </form>
         </div>
     </div>
@@ -326,17 +336,157 @@
 
     {% endblock %}
     <script>
+        document.getElementById("logout_button").addEventListener("click", function(event) {
+        event.preventDefault(); // デフォルトのリンク動作を防ぐ
+
+        // フォームを作成
+        var form = document.createElement("form");
+        form.method = "post";
+        form.action = "{% url 'logout' %}";
+
+        // CSRFトークンを追加
+        var csrfToken = document.createElement("input");
+        csrfToken.type = "hidden";
+        csrfToken.name = "csrfmiddlewaretoken";
+        csrfToken.value = "{{ csrf_token }}"; // Djangoのテンプレートタグを使用
+
+        form.appendChild(csrfToken);
+
+        // フォームをドキュメントに追加して送信
+        document.body.appendChild(form);
+        form.submit();
+    });
+    </script>
+    <script>
         document.getElementById("add_button").addEventListener("click", function() {
         document.getElementById("overlay").style.display = "block";
+        document.getElementById("photo_form").style.display = "block";
         });
 
         document.getElementById("overlay").addEventListener("click", function() {
         document.getElementById("overlay").style.display = "none";
+        document.getElementById("photo_form").style.display = "none";
         });
 
         document.getElementById("overlayContent").addEventListener("click", function(event) {
         event.stopPropagation(); // クリックイベントの伝播を停止する
         });
+    </script>
+    <script>
+        document.getElementById("tag_add").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("tag_form").style.display = "block";
+        });
+
+        document.getElementById("overlay").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("tag_form").style.display = "none";
+        });
+
+        document.getElementById("overlayContent").addEventListener("click", function(event) {
+        event.stopPropagation(); // クリックイベントの伝播を停止する
+        });
+    </script>
+    <script>
+        document.getElementById("tag_delete").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("tag_form_delete").style.display = "block";
+        });
+
+        document.getElementById("overlay").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("tag_form_delete").style.display = "none";
+        });
+
+        document.getElementById("overlayContent").addEventListener("click", function(event) {
+        event.stopPropagation(); // クリックイベントの伝播を停止する
+        });
+    </script>
+    <script>
+        function smoothScroll(element, direction, distance, duration) {
+            const start = element.scrollLeft;
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1); // Ensure progress does not exceed 1
+                const easeInOutQuad = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress; // Easing function
+
+                element.scrollLeft = start + direction * distance * easeInOutQuad;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        document.getElementById("left_move").addEventListener("click", function() {
+            smoothScroll(document.getElementById("sumple_photo"), -1, 400, 500); // Scroll left by 400px over 500ms
+        });
+
+        document.getElementById("right_move").addEventListener("click", function() {
+            smoothScroll(document.getElementById("sumple_photo"), 1, 400, 500); // Scroll right by 400px over 500ms
+        });
+    </script>
+    <script>
+        function getPhotoNumOptions(tagId) {
+            // クラス名がphoto_tbodyのすべての要素を取得
+            var photoTbodyElements = document.getElementsByClassName('photo_tbody');
+            var ids = [];
+            
+            // 各要素のidとtagIdを比較
+            for (var i = 0; i < photoTbodyElements.length; i++) {
+                var element = photoTbodyElements[i];
+                
+                // idが一致するかどうかを確認
+                if (element.id === tagId) {
+                    // 一致する場合、子要素を取得
+                    var children = element.children;
+                    if (children.length > 0){
+                        for (var j = 0; j < children.length; j++) {
+                            var child = children[j];
+                            
+                            // 子要素のさらに子要素の二つ目のIDを取得
+                            if (child.children.length >= 2) {
+                                ids.push(child.children[1].id);
+                            }
+                        }
+                        ids.push(Math.max.apply(null, ids) + 1);
+                    }else{
+                        ids.push(document.getElementsByClassName('photo_data_chaild').length + 1);
+                    }
+                }
+            }
+            
+            return ids;
+        }
+
+        function updatePhotoNumOptions() {
+            const tagSelect = document.getElementById('id_tag');
+            const selectedTagId = tagSelect.value;
+            const photoNumContainer = document.getElementById('tag_select');
+
+            // 既存の写真番号フィールドを削除
+            photoNumContainer.innerHTML = '';
+
+            const photoNumOptions = getPhotoNumOptions(selectedTagId);
+            photoNumOptions.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                photoNumContainer.appendChild(optionElement);
+                photoNumContainer.appendChild(document.createElement('br'));
+            });
+
+            // タグが選択されていない場合は写真番号フィールドを非表示
+            if (selectedTagId === '') {
+                photoNumContainer.style.display = 'none';
+            } else {
+                photoNumContainer.style.display = 'block';
+            }
+        }
     </script>
 </body>
 </html>
