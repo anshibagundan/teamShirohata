@@ -43,7 +43,7 @@ def user_login(request):
             messages.error(request, 'ユーザー名またはパスワードが間違っています。')
             return render(request, 'login.html')
         
-    return render(request, 'login.html')
+    return render(request, 'login.html' ,{'MEDIA_URL':settings.MEDIA_URL})
 
 def user_create(request):
     if request.method == 'POST':
@@ -71,7 +71,7 @@ def user_create(request):
             messages.error(request, 'ユーザー名またはパスワードが間違っています。ユーザー名: {}'.format(new_password))
 
 
-    return render(request, 'login_create.html')
+    return render(request, 'login_create.html', {'MEDIA_URL':settings.MEDIA_URL})
 
 
 from django.db import transaction
