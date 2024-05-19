@@ -78,14 +78,16 @@ from django.db import transaction
 def index(request):
     obj = Photo.objects.all()
     if request.method == 'POST':
-        form = PhotoForm(request.POST, request.FILES)
-        Tag_form = TagForm(request.POST)
+        form = PhotoForm(request.POST, request.FILES, user=request.user)
+        tag_form = TagForm(user=request.user)
         tag_form_delete = TagForm_delete(request.POST)
+        tag_obj = Tag.objects.filter(user=request.user)
+
         if form.is_valid():
+            logger.info(f"Cleaned data: {form.cleaned_data}")
             with transaction.atomic():  # トランザクションを開始
                 photo = form.save(commit=False)
                 photo.user = request.user
-                tags = request.POST.getlist('tag')
 
                 image_file = request.FILES['content']
                 image = Image.open(io.BytesIO(image_file.read()))
@@ -128,6 +130,8 @@ def index(request):
                 tag.save()
                 messages.success(request, 'タグが追加されました。')
             return redirect('title')
+        else:
+            logger.error(f"Form errors: {form.errors}")
     else:
         form = PhotoForm(user = request.user)
         tag_form = TagForm(user = request.user)

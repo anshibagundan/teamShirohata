@@ -24,13 +24,10 @@ class PhotoForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        username = kwargs.pop('user', None)
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        tags = Tag.objects.filter(user=username)
-        tag_choices = [('', '--選択してください--')]  # 空のチョイスを追加
-        for tag in tags:
-            tag_choices.append((tag.tag, tag.tag))  # 全てのタグを追加
-        self.fields['tag'].choices = tag_choices
+        if user is not None:
+            self.fields['tag'].queryset = Tag.objects.filter(user=user)
 
 class TagForm(forms.ModelForm):
     class Meta:
