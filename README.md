@@ -40,6 +40,8 @@ https://youtu.be/I3AjpXDCTGw
 - PostgreSQL
 - Blender
 
+## 注意
+現在それぞれのコードはdevelopmentブランチにあります
             
 
 
