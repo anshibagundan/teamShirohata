@@ -327,7 +327,7 @@
             </form>
             <form id="tag_form_delete" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ tag_form_delete.as_p }}
+                {{ tag_delete_form.as_p }}
                 <button type="submit" name="delete_tag">Delete</button>
             </form>
         </div>

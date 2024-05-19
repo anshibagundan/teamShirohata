@@ -16,7 +16,7 @@ from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .forms import PhotoForm, TagForm
+from .forms import PhotoForm, TagForm, TagForm_delete
 from .models import Photo
 from .serializers import PhotoSerializer, UserSerializer
 
@@ -82,6 +82,7 @@ def index(request):
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES, user=request.user)
         tag_form = TagForm(request.POST, user=request.user)
+        tag_delete_form = TagForm_delete(request.POST, user=request.user)
         if form.is_valid():
             with transaction.atomic():  # Start a transaction
                 photo = form.save(commit=False)
@@ -112,11 +113,24 @@ def index(request):
             tag.user = request.user
             tag.save()
             return redirect('title')
+        
+        elif tag_delete_form.is_valid():
+                selected_tag = tag_delete_form.cleaned_data['tag']
+                if not Photo.objects.filter(tag=selected_tag).exists():
+                    selected_tag.delete()
+                    messages.success(request, 'タグが削除されました。')
+                    return redirect('title')
+                else:
+                    alert_message = f'写真がタグ "{selected_tag}" に関連付けられているため、削除できませんでした。'
+                    messages.warning(request, alert_message)
+                    return render(request, 'index.html', {'alert_message': alert_message})
+
     else:
         form = PhotoForm(user=request.user)
         tag_form = TagForm(user=request.user)
+        tag_delete_form = TagForm_delete(user=request.user)
         obj = Photo.objects.all().order_by('photo_num')
-    return render(request, 'index.html', {'form': form, 'tag_form' : tag_form, 'obj': obj, 'MEDIA_URL': settings.MEDIA_URL})
+    return render(request, 'index.html', {'form': form, 'tag_form' : tag_form, 'tag_delete_form' : tag_delete_form, 'obj': obj, 'MEDIA_URL': settings.MEDIA_URL})
 
 
 
