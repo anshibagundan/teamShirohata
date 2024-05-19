@@ -8,7 +8,7 @@ public class ExitPosition : MonoBehaviour
     public Vector3 positionOffset = new Vector3(0, 0, 50); // 各インスタンスの位置オフセット
 
     //public int streetNum = 5;
-    public GameObject endText;
+    public GameObject partation;
     void Start()
     {
         // 1秒後にStartMuseumメソッドを呼び出す
@@ -22,7 +22,7 @@ public class ExitPosition : MonoBehaviour
         
         transform.position += positionOffset*streetNum;
 
-        endText.SetActive(true);
+        partation.SetActive(true);
 
     }
 }

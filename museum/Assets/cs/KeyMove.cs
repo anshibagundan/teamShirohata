@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class KeyMove : MonoBehaviour
 {
-    public float moveSpeed = 4.0f;  // 前進・後退速度
+    public float moveSpeed = 10.0f;  // 前進・後退速度
     public float rotateSpeed = 100.0f;  // 回転速度
     public float minDistance = 0.3f;  // 最小距離
 
