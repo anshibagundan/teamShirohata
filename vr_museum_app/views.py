@@ -92,7 +92,7 @@ def index(request):
                 image_file = request.FILES['content']
                 image = Image.open(io.BytesIO(image_file.read()))
                 photo.width, photo.height = image.size
-
+                photo.tag = request.POST.get('tag')
                 new_photo_num = int(request.POST.get('photo_num'))
                 max_photo_num = Photo.objects.count() + 1
 
